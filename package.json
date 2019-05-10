@@ -1,0 +1,26 @@
+{
+  "name": "SurveyOrganizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jairofilho79/SurveyOrganizer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jairofilho79/SurveyOrganizer/issues"
+  },
+  "homepage": "https://github.com/jairofilho79/SurveyOrganizer#readme",
+  "dependencies": {
+    "imagemagick": "^0.1.3",
+    "pdf-image": "^2.0.0",
+    "pdf-parse": "^1.1.1",
+    "xml2json": "^0.11.2"
+  }
+}
