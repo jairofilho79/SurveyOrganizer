@@ -4,21 +4,26 @@ const execSync = require('child_process').execSync;
 const fs = require('fs');
 const fetch = require('node-fetch');
 const { DOMParser } = require('xmldom');
-const xmlToJSON = require('xmlToJSON');
+const xmlToJSON = require('xmltojson');
 xmlToJSON.stringToXML = (string) => new DOMParser().parseFromString(string, 'text/xml');
 
 let isServerOn = false; //Verificar se o GROBID foi iniciado e não ficar tentando várias vezes.
 // let json = parser.toJson(xml);
 // let xml = parser.toXml(json);
 
+let configFile = JSON.parse(fs.readFileSync('config.json').toString('utf8'));
+
 //Usa esse para onde está o teu GROBID. Em breve vamos refatorar isso aqui.
-// const grobid_path = ``;
+// const grobid_path = `C:\grobid-0.5.4`;
 // const grobid_path_client = `C:\\Users\\Jairo\\Desktop\\grobid-client`;
-const grobid_path = `C:\\grobid-0.5.4`;
-const grobid_path_client = `C:\\Users\\Jairo\\Desktop\\grobid-client`;
-let in_folder = __dirname+"\\In" //Pasta origem dos pdfs
-let out_folder_XML = __dirname+"\\Out_XML" //Pasta destino do xml
-let out_folder_JSON = __dirname+"\\Out_JSON" //Pasta destino do xml
+const {grobid_path} = configFile;
+const {grobid_client_path} = configFile;
+
+if(grobid_client_path === '' || grobid_path === '') {console.log('Please, set the grobid paths on config.json'); return;}
+
+let in_folder = `${__dirname}${process.platform == 'windows' ? '\\' : '/'}In` //Pasta origem dos pdfs
+let out_folder_XML = `${__dirname}${process.platform == 'windows' ? '\\' : '/'}Out_XML` //Pasta destino do xml
+let out_folder_JSON = `${__dirname}${process.platform == 'windows' ? '\\' : '/'}Out_JSON` //Pasta destino do xml
 let process_type = ""; //Qual tipo de processo vai ser feito (total, só as referências etc)
 /*
 * processFulltextDocument //Processa o documento inteiro
@@ -28,8 +33,10 @@ let process_type = ""; //Qual tipo de processo vai ser feito (total, só as refe
 * */
 console.log('Passou');
 
+const grobid_client_port = JSON.parse(fs.readFileSync(`${grobid_client_path}${process.platform == 'windows' ? '\\' : '/' }config.json`)).grobid_port;
+
 if(!isServerOn) {
-    fetch('http://localhost:8070/')
+    fetch(`http://localhost:${grobid_client_port}/`)
         .catch(e=> {
             console.log(2);
             exec(`gradlew run`,{cwd: grobid_path});
@@ -42,7 +49,7 @@ if(!isServerOn) {
 } else {console.log(3);pdf2XML();}
 
 function pdf2XML() {
-    execSync(`node main.js -in ${in_folder} -out ${out_folder_XML} ${process_type}`,{cwd: grobid_path_client});
+    execSync(`node main.js -in ${in_folder} -out ${out_folder_XML} ${process_type}`,{cwd: grobid_client_path});
     console.log('Terminou pdf2xml');
     XML2JSON();
 }
