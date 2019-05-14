@@ -34,17 +34,22 @@ let process_type = ""; //Qual tipo de processo vai ser feito (total, só as refe
 console.log('Passou');
 
 const grobid_client_port = JSON.parse(fs.readFileSync(`${grobid_client_path}${process.platform == 'windows' ? '\\' : '/' }config.json`)).grobid_port;
-
+console.log(grobid_client_port)
 if(!isServerOn) {
-    fetch(`http://localhost:${grobid_client_port}/`)
-        .catch(e=> {
-            console.log(2);
-            exec(`gradlew run`,{cwd: grobid_path});
-            setTimeout(() => {
-                pdf2XML()
-            },5000);
-        })
-        .then(e=> {console.log(1);isServerOn = true; pdf2XML();})
+    try{
+        fetch(`http://127.0.0.1:${grobid_client_port}/`)
+            .then(response => response)
+            .then((resp) => {
+                console.log(1);isServerOn = true; pdf2XML();
+            })
+    }
+    catch (e) {
+        console.log(2);
+        exec(`./gradlew run`,{cwd: grobid_path});
+        setTimeout(() => {
+            pdf2XML()
+        },5000);
+    }
 
 } else {console.log(3);pdf2XML();}
 
