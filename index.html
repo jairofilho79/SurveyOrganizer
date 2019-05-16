@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <title>Survey Organizer</title>
+        <link rel="stylesheet" href="Library/bulma.min.css">
+        <link rel="stylesheet" href="Css/index.css">
+    </head>
+    <body>
+        <div class="columns">
+            <div class="column">
+                <div id="surveyOrganizer" class="box has-text-centered is-shadowless">Survey Organizer</div>
+                <div class="columns is-multiline">
+                    <div class="box">
+                        Inserir Pesquisa:
+                        <input type="file">
+                    </div>
+                    <div class="box">
+                        Inserir PDF:
+                        <input type="file">
+                    </div>
+                </div>
+
+            </div>
+            <div class="column is-flex is-half">
+                <div class="column">
+                    <div class="tabs is-centered">
+                        <ul>
+                            <li id="referencesTab" class="is-active"><a>References</a></li>
+                            <li id="keywordTab"><a>Keywords</a></li>
+                            <li id="rawJsonTab"><a>Raw JSON</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="referencesContent">
+                        <svg id="referencesSVG"></svg>
+                        References
+                    </div>
+                    <div id="keywordContent">
+                        <svg id="keywordSVG"></svg>
+                        Keyword
+                    </div>
+                    <div id="rawJsonContent">
+                        {hello,world}
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="column">
+                <div id="labvis" class="box has-text-centered is-shadowless">Labvis</div>
+                <div class="columns is-multiline">
+                    <div class="box">
+                        Inserir Pesquisa:
+                        <input type="file">
+                    </div>
+                    <div class="box">
+                        Inserir PDF:
+                        <input type="file">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="index.js"></script>
+    </body>
+</html>
