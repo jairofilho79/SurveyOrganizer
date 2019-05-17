@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/jairofilho79/SurveyOrganizer#readme",
   "dependencies": {
-    "node-fetch": "^2.5.0",
+    "formidable": "^1.2.1",
+    "inquirer": "^6.3.1",
+    "parse-multipart": "^1.0.4",
     "xmldom": "^0.1.27",
     "xmltojson": "^1.3.5"
   }

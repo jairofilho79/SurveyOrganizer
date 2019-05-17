@@ -1,29 +1,17 @@
 
-const exec = require('child_process').exec;
+const http = require('http');
 const execSync = require('child_process').execSync;
 const fs = require('fs');
-const fetch = require('node-fetch');
+const formidable = require('formidable');
 const { DOMParser } = require('xmldom');
 const xmlToJSON = require('xmltojson');
 xmlToJSON.stringToXML = (string) => new DOMParser().parseFromString(string, 'text/xml');
 
-let isServerOn = false; //Verificar se o GROBID foi iniciado e não ficar tentando várias vezes.
-// let json = parser.toJson(xml);
-// let xml = parser.toXml(json);
+const slash = process.platform == 'win32' ? '\\' : '/';
 
-let configFile = JSON.parse(fs.readFileSync('config.json').toString('utf8'));
-
-//Usa esse para onde está o teu GROBID. Em breve vamos refatorar isso aqui.
-// const grobid_path = `C:\grobid-0.5.4`;
-// const grobid_path_client = `C:\\Users\\Jairo\\Desktop\\grobid-client`;
-const {grobid_path} = configFile;
-const {grobid_client_path} = configFile;
-
-if(grobid_client_path === '' || grobid_path === '') {console.log('Please, set the grobid paths on config.json'); return;}
-
-let in_folder = `${__dirname}${process.platform == 'windows' ? '\\' : '/'}In` //Pasta origem dos pdfs
-let out_folder_XML = `${__dirname}${process.platform == 'windows' ? '\\' : '/'}Out_XML` //Pasta destino do xml
-let out_folder_JSON = `${__dirname}${process.platform == 'windows' ? '\\' : '/'}Out_JSON` //Pasta destino do xml
+let in_folder = `${__dirname}${slash}In` //Pasta origem dos pdfs
+let out_folder_XML = `${__dirname}${slash}Out_XML` //Pasta destino do xml
+let out_folder_JSON = `${__dirname}${slash}Out_JSON` //Pasta destino do xml
 let process_type = ""; //Qual tipo de processo vai ser feito (total, só as referências etc)
 /*
 * processFulltextDocument //Processa o documento inteiro
@@ -31,27 +19,55 @@ let process_type = ""; //Qual tipo de processo vai ser feito (total, só as refe
 * processReferences //Somente as referências
 * OBS: por padrão, é processado o documento inteiro
 * */
-console.log('Passou');
 
-const grobid_client_port = JSON.parse(fs.readFileSync(`${grobid_client_path}${process.platform == 'windows' ? '\\' : '/' }config.json`)).grobid_port;
-console.log(grobid_client_port)
-if(!isServerOn) {
-    try{
-        fetch(`http://127.0.0.1:${grobid_client_port}/`)
-            .then(response => response)
-            .then((resp) => {
-                console.log(1);isServerOn = true; pdf2XML();
-            })
-    }
-    catch (e) {
-        console.log(2);
-        exec(`./gradlew run`,{cwd: grobid_path});
-        setTimeout(() => {
-            pdf2XML()
-        },5000);
+//Refatorado. Agora a pessoa adiciona o grobid pela linha de comando, em qualquer SOe nao fica na propria pasta, fica na pasta temp. Sem dar conflito com o github.
+const platformASpath = process.platform === "darwin" || process.platform === "linux" ? "/var/tmp/" : process.platform === "win32" ? String(process.env.temp) : false;
+
+let configFile = JSON.parse(fs.readFileSync(`${platformASpath}config_sorg.json`).toString('utf8'));
+const {grobid_path} = configFile;
+const {grobid_client_path} = configFile;
+if(grobid_client_path === '' || grobid_path === '') {console.log(`Please, set the grobid paths on config.json at: ${platformASpath}${slash}config_sorg.json`); return;}
+
+const server = http.createServer((request, response) => {
+
+    // Set CORS headers
+    response.setHeader('Access-Control-Allow-Origin'  , '*');
+    response.setHeader('Access-Control-Request-Method', '*');
+    response.setHeader('Access-Control-Allow-Methods' , '*');
+    response.setHeader('Access-Control-Allow-Headers' , '*');
+
+    const pdfName = getUrlVars(decodeURIComponent(request.url))['name'];
+
+    switch(request.url) {
+        case "/getReseachFromPDF":
+            console.log('Acho que chegaram os arquivos');
+
+            request.once('end', function onEnd () {
+                response.statusCode = 200;
+                response.end('Uploaded File\n');
+            });
+            request.pipe(fs.createWriteStream(`./${pdfName}`));
+            break;
+        default:
+            console.log('Deu Bom');
+            break;
     }
 
-} else {console.log(3);pdf2XML();}
+
+})
+server.listen(8080);
+
+function getUrlVars(url) {
+    let myJson = {};
+    let hashes = url.slice(url.indexOf('?') + 1).split('&');
+    for (let i = 0; i < hashes.length; i++) {
+        let hash = hashes[i].split('=');
+        myJson[hash[0]] = hash[1];
+    }
+    return myJson;
+}
+
+console.log(`Foi ao ligar o servidor!`);
 
 function pdf2XML() {
     execSync(`node main.js -in ${in_folder} -out ${out_folder_XML} ${process_type}`,{cwd: grobid_client_path});
@@ -73,7 +89,7 @@ function XML2JSON() {
 //Criar o objeto Pesquisa
 /*
 * Salvar o título, autores, abstract, palavras-chave, bibliografia
-* Salvar isso no objeto pesquisa
-* Salva o objeto pesquisa num arquivo.
+* Salvar isso no objeto research
+* Salva o objeto research num arquivo.
 *
 * */
