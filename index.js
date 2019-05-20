@@ -39,15 +39,17 @@ document.getElementById('researchFile').onchange = () => {
     reader.readAsText(file);
 }
 
-const form = document.getElementById('form');
 document.getElementById('pdfFile').onchange = () => {
     const xhr = new XMLHttpRequest();
-    const form = new FormData();
+
     let files = [...document.getElementById('pdfFile').files];
 
-    files.forEach(file => {
-
-        xhr.open("POST", `http://127.0.0.1:8080/getReseachFromPDF/?name=${file.name}` , true);
+    let numCurrPDF = 0;
+    sendPDFFile();
+    function sendPDFFile() {
+        const form = new FormData();
+        console.log(files[numCurrPDF]);
+        xhr.open("POST", `http://127.0.0.1:8080/getReseachFromPDF--${files[numCurrPDF].name.substring(0,files[numCurrPDF].name.lastIndexOf('.'))}` , true);
 
         //Send the proper header information along with the request
         xhr.setRequestHeader("Content-Type", "multipart/form-data");
@@ -55,11 +57,18 @@ document.getElementById('pdfFile').onchange = () => {
         xhr.onreadystatechange = function() { // Call a function when the state changes.
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 console.log(`Foi processado!`);
-                //Concatenar pesquisas aqui.
+                if(numCurrPDF === files.length-1) {
+                    console.log('terminou tudo!');
+                    //Chamar função para concatenar pesquisas.
+                } else {
+                    numCurrPDF++;
+                    sendPDFFile()
+                }
             }
         }
-        xhr.send(form.parse(file));
-    });
+        form.append('file',files[numCurrPDF]);
+        xhr.send(form);
+    }
 
 }
 

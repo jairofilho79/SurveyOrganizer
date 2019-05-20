@@ -2,7 +2,6 @@
 const http = require('http');
 const execSync = require('child_process').execSync;
 const fs = require('fs');
-const formidable = require('formidable');
 const { DOMParser } = require('xmldom');
 const xmlToJSON = require('xmltojson');
 xmlToJSON.stringToXML = (string) => new DOMParser().parseFromString(string, 'text/xml');
@@ -21,9 +20,9 @@ let process_type = ""; //Qual tipo de processo vai ser feito (total, só as refe
 * */
 
 //Refatorado. Agora a pessoa adiciona o grobid pela linha de comando, em qualquer SOe nao fica na propria pasta, fica na pasta temp. Sem dar conflito com o github.
-const platformASpath = process.platform === "darwin" || process.platform === "linux" ? "/var/tmp/" : process.platform === "win32" ? String(process.env.temp) : false;
+const platformASpath = process.platform === "darwin" || process.platform === "linux" ? "/var/tmp" : process.platform === "win32" ? String(process.env.temp) : false;
 
-let configFile = JSON.parse(fs.readFileSync(`${platformASpath}config_sorg.json`).toString('utf8'));
+let configFile = JSON.parse(fs.readFileSync(`${platformASpath}${slash}config_sorg.json`).toString('utf8'));
 const {grobid_path} = configFile;
 const {grobid_client_path} = configFile;
 if(grobid_client_path === '' || grobid_path === '') {console.log(`Please, set the grobid paths on config.json at: ${platformASpath}${slash}config_sorg.json`); return;}
@@ -36,24 +35,22 @@ const server = http.createServer((request, response) => {
     response.setHeader('Access-Control-Allow-Methods' , '*');
     response.setHeader('Access-Control-Allow-Headers' , '*');
 
-    const pdfName = getUrlVars(decodeURIComponent(request.url))['name'];
+    const url = decodeURIComponent(request.url)
 
-    switch(request.url) {
-        case "/getReseachFromPDF":
-            console.log('Acho que chegaram os arquivos');
+    if(url.includes("/getReseachFromPDF",0)) {
+        console.log('Acho que chegaram os arquivos');
 
-            request.once('end', function onEnd () {
-                response.statusCode = 200;
-                response.end('Uploaded File\n');
-            });
-            request.pipe(fs.createWriteStream(`./${pdfName}`));
-            break;
-        default:
-            console.log('Deu Bom');
-            break;
+        const pdfName = url.substring(url.indexOf('--')+2);
+        console.log(pdfName);
+
+        request.once('end', function onEnd () {
+            response.statusCode = 200;
+            response.end('Uploaded File\n');
+        });
+        request.pipe(fs.createWriteStream(`./In/${pdfName}.pdf`));
+    } else {
+        console.log('Deu Bom');
     }
-
-
 })
 server.listen(8080);
 

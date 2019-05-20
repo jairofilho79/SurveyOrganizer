@@ -1,5 +1,5 @@
 
-const exec = require('child_process').exec;
+const exec = require('child_process').execSync;
 const fs = require('fs');
 
 const slash = process.platform == 'win32' ? '\\' : '/';
@@ -10,7 +10,7 @@ let grobid_client_path;
 const platformASpath = process.platform === "darwin" || process.platform === "linux" ? "/var/tmp/" : process.platform === "win32" ? String(process.env.temp) : false;
 
 let configFile;
-if (!fs.existsSync(`${platformASpath}config_sorg.json`)) {
+if (!fs.existsSync(`${platformASpath}${slash}config_sorg.json`)) {
 
     const inquirer = require('inquirer');
 
@@ -35,21 +35,23 @@ if (!fs.existsSync(`${platformASpath}config_sorg.json`)) {
         }
     ]
 
-    deasync(inquirer.prompt(questions).then(answers => {
-        const jsonPaths = `
+    inquirer.prompt(questions).then(answers => {
+        let jsonPaths = `
             {
                 "grobid_path":"${answers['grobid_path']}",
                 "grobid_client_path":"${answers['grobid_client_path']}"
 
             }
         `;
+        jsonPaths = jsonPaths.split('\\').join('\\\\')
+
         configFile = JSON.parse(jsonPaths);
         fs.writeFileSync(`${platformASpath}${slash}config_sorg.json`,jsonPaths);
         setGrobidPaths()
-    }))
+    })
 
 } else {
-    configFile = JSON.parse(fs.readFileSync(`${platformASpath}config_sorg.json`).toString('utf8'));
+    configFile = JSON.parse(fs.readFileSync(`${platformASpath}${slash}config_sorg.json`).toString('utf8'));
     setGrobidPaths()
 }
 
@@ -61,11 +63,10 @@ function setGrobidPaths() {
 }
 
 function startGrobidServer() {
-    const grobid_client_port = JSON.parse(fs.readFileSync(`${grobid_client_path}${process.platform == 'windows' ? '\\' : '/' }config.json`)).grobid_port;
-
+    const dot = process.platform === "win32" ? "" : "./";
     try {
-        exec(`./gradlew run`,{cwd: grobid_path});
         console.log(`Foi ao ligar o servidor do GROBID`);
+        exec(`${dot}gradlew run`,{cwd: grobid_path});
     }
     catch(e) {
         console.log(e);
