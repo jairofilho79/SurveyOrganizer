@@ -3,6 +3,12 @@
         <title>Survey Organizer</title>
         <link rel="stylesheet" href="Library/bulma.min.css">
         <link rel="stylesheet" href="Css/index.css">
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="http://d3js.org/d3-selection-multi.v1.js"></script>
+        <style type="text/css">
+            .node {}
+            .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
+        </style>
     </head>
     <body>
         <div class="columns">
@@ -39,8 +45,8 @@
                         References
                     </div>
                     <div id="keywordContent">
-                        <svg id="keywordSVG"></svg>
-                        Keyword
+                        <svg id="keywordSVG" width="800" height="600">
+                        </svg>
                     </div>
                     <div id="rawJsonContent">
                         {hello,world}
