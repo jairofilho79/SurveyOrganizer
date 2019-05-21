@@ -17,8 +17,10 @@ function changeTab(id) {
     ActiveTab = id;
 }
 
+//Input Style
+//https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
+
 document.getElementById('researchFile').onchange = () => {
-    console.log('oi');
     const reader = new FileReader();
     const file = document.getElementById('researchFile').files[0];
 
@@ -27,13 +29,12 @@ document.getElementById('researchFile').onchange = () => {
 
         if(Object.keys(research).length !== 0) {
             if(confirm('Are you sure you want to override the current Research?')) {
-                console.log(res);
                 research = JSON.parse(res);
             }
         } else {
-            console.log(res);
             research = JSON.parse(res);
         }
+        setKW();
     };
 
     reader.readAsText(file);
@@ -45,22 +46,25 @@ document.getElementById('pdfFile').onchange = () => {
     let files = [...document.getElementById('pdfFile').files];
 
     let numCurrPDF = 0;
+    let foldername = ""
     sendPDFFile();
     function sendPDFFile() {
         const form = new FormData();
-        console.log(files[numCurrPDF]);
-        xhr.open("POST", `http://127.0.0.1:8080/getReseachFromPDF--${files[numCurrPDF].name.substring(0,files[numCurrPDF].name.lastIndexOf('.'))}` , true);
+        xhr.open("POST", `${backendURI}/setPDF--${files[numCurrPDF].name.substring(0,files[numCurrPDF].name.lastIndexOf('.'))}__${foldername}` , true);
 
         //Send the proper header information along with the request
         xhr.setRequestHeader("Content-Type", "multipart/form-data");
 
         xhr.onreadystatechange = function() { // Call a function when the state changes.
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                console.log(`Foi processado!`);
+
                 if(numCurrPDF === files.length-1) {
-                    console.log('terminou tudo!');
+                    console.log('terminaram os envios!');
+                    getResearchFromPDF(xhr.responseText)
                     //Chamar função para concatenar pesquisas.
                 } else {
+                    console.log(`Foi processado um pdf!`);
+                    foldername = xhr.responseText;
                     numCurrPDF++;
                     sendPDFFile()
                 }
@@ -72,9 +76,95 @@ document.getElementById('pdfFile').onchange = () => {
 
 }
 
-//https://gist.github.com/fancellu/2c782394602a93921faff74e594d1bb1
-function sovai() {
+function getResearchFromPDF(folder) {
+    fetch(`${backendURI}/getResearchJSON/?folder=${folder}`)
+        // .then(response => response.json())
+        .then(response => response.text())
+        .then(res => {
+            console.log(res);
+            console.log("Funfou, porra!");
+        })
+        .catch(e => {
+            console.log(e);
+        })
+}
 
+//https://gist.github.com/fancellu/2c782394602a93921faff74e594d1bb1
+
+function keywordPreparation() {
+
+    /*
+    * Links
+    *
+    * [
+        {
+            "source": 1,
+            "target": 2,
+            "type": "KNOWS",
+            "since": 2010
+        },
+        {
+            "source": 1,
+            "target": 3,
+            "type": "FOUNDED"
+        },
+        {
+            "source": 2,
+            "target": 3,
+            "type": "WORKS_ON"
+        },
+        {
+            "source": 3,
+            "target": 4,
+            "type": "IS_A"
+        }
+    ]
+    * */
+    /*
+    * Nodes
+    *
+    * [
+        {
+            "name": "Peter",
+            "label": "Person",
+            "id": 1
+        },
+        {
+            "name": "Michael",
+            "label": "Person",
+            "id": 2
+        },
+        {
+            "name": "Neo4j",
+            "label": "Database",
+            "id": 3
+        },
+        {
+            "name": "Graph Database",
+            "label": "Database",
+            "id": 4
+        }
+    ]
+    * */
+
+    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
+    let nodes = []
+    let links = []
+    const arcticles = research.arcticles;
+    for(let a=0; a < arcticles.length -1; a++) {
+        nodes.push({"name": arcticles[a].title, "id": a});
+        for(let art = a+1; art < arcticles.length; art++) {
+            const common = arcticles[a].keywords.filter(function(obj) { return arcticles[art].keywords.indexOf(obj) !== -1; });
+            if(common.length > 0) {
+                links.push({"source": a, "target": art, "type": JSON.stringify(common)})
+            }
+        }
+    };
+    nodes.push({"name": arcticles[arcticles.length-1].title, "id": arcticles.length-1});
+    return [nodes,links];
+}
+
+function networkGraphDrawing(nod,lin) {
     let colors = d3.scaleOrdinal(d3.schemeCategory10);
 
     let svg = d3.select("#keywordSVG")
@@ -100,59 +190,21 @@ function sovai() {
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
-    update([
-        {
-            "source": 1,
-            "target": 2,
-            "type": "KNOWS",
-            "since": 2010
-        },
-        {
-            "source": 1,
-            "target": 3,
-            "type": "FOUNDED"
-        },
-        {
-            "source": 2,
-            "target": 3,
-            "type": "WORKS_ON"
-        },
-        {
-            "source": 3,
-            "target": 4,
-            "type": "IS_A"
-        }
-    ], [
-        {
-            "name": "Peter",
-            "label": "Person",
-            "id": 1
-        },
-        {
-            "name": "Michael",
-            "label": "Person",
-            "id": 2
-        },
-        {
-            "name": "Neo4j",
-            "label": "Database",
-            "id": 3
-        },
-        {
-            "name": "Graph Database",
-            "label": "Database",
-            "id": 4
-        }
-    ]);
+
+    update(lin,nod);
+
     function update(links, nodes) {
         link = svg.selectAll(".link")
             .data(links)
             .enter()
             .append("line")
-            .attr("class", "link")
-            .attr('marker-end','url(#arrowhead)')
-        link.append("title")
-            .text(function (d) {return d.type;});
+            .attr("class", "link");
+            // .attr('marker-end','url(#arrowhead)')
+        // link.append("title")
+        //     .text(function (d) {return d.type;});
+
+        link
+            .on('click', (d) => {console.log(d.type)})
         edgepaths = svg.selectAll(".edgepath")
             .data(links)
             .enter()
@@ -188,18 +240,20 @@ function sovai() {
                 //.on("end", dragended)
             );
         node.append("circle")
-            .attr("r", 5)
+            .attr("r", 10)
             .style("fill", function (d, i) {return colors(i);})
         node.append("title")
             .text(function (d) {return d.id;});
         node.append("text")
             .attr("dy", -3)
-            .text(function (d) {return d.name+":"+d.label;});
+            .text(function (d) {return d.name});
         simulation
             .nodes(nodes)
-            .on("tick", ticked);
+            .on("tick", ticked)
         simulation.force("link")
             .links(links);
+        node
+            .on('click',(d,i) => {console.log(d.name)});
     }
     function ticked() {
         link
@@ -233,86 +287,9 @@ function sovai() {
         d.fx = d3.event.x;
         d.fy = d3.event.y;
     }
-//    function dragended(d) {
-//        if (!d3.event.active) simulation.alphaTarget(0);
-//        d.fx = undefined;
-//        d.fy = undefined;
-//    }
-
-}
-sovai();
-
-function keywordPreparation() {
-    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
-    let arcticleInd = 0;
-    let nodes = []
-    let links = []
-    let findingLinks = {};
-    research.arcticles.forEach(arcticle => {
-        nodes.push({"name": arcticle.title, "group": arcticleInd});
-        arcticle.keywords.forEach(keyword => {
-            if(findingLinks[keyword] === undefined) findingLinks[keyword] = [];
-            findingLinks[keyword].push(arcticleInd);
-        })
-        arcticleInd++;
-    });
-
-    let keys = Object.keys(findingLinks);
-    for(let key = 0; key < keys.length; key++) {
-        for(let i=0; i < keys[key].length; i++) {
-            for(let j = i+1; j < keys[key].length; j++) {
-                links.push({"source": keys[key][i], "target": keys[key][j], "value": 1});
-            }
-        }
-    }
-
-    return [nodes,links];
 }
 
-function keywordDrawing(nod,lin) {
-    let color = d3.scaleOrdinal(d3.schemeCategory10);
-
-    let force = d3.forceLink()
-        .charge(-180)
-        .linkDistance(70)
-        // .size([width, height]);
-
-    let svg = d3.select("#keywordSVG");
-
-    force
-        .nodes(nod)
-        .links(lin)
-        .start();
-
-    let links = svg.append("g").selectAll("line.link")
-        .data(force.links())
-        .enter().append("line")
-        .attr("class", "link")
-        .attr("marker-end", "url(#arrow)");
-
-    let nodes = svg.selectAll("circle.node")
-        .data(force.nodes())
-        .enter().append("circle")
-        .attr("class", "node")
-        .attr("r", 8)
-        .style("fill", function(d) { return color(d.group); })
-        .call(force.drag);
-
-    nodes.append("title")
-        .text(function(d) { return d.name; });
-
-    force.on("tick", function() {
-        links.attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
-
-        nodes.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-    });
-}
-
-function setKW() {keywordDrawing(...keywordPreparation())}
+function setKW() {networkGraphDrawing(...keywordPreparation())}
 
 document.getElementById('referencesTab').addEventListener('click',() => {changeTab('references')})
 document.getElementById('keywordTab'   ).addEventListener('click',() => {changeTab('keyword'   )})
