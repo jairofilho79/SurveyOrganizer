@@ -9,10 +9,6 @@ xmlToJSON.stringToXML = (string) => new DOMParser().parseFromString(string, 'tex
 
 const slash = process.platform == 'win32' ? '\\' : '/';
 
-// let in_folder = `${__dirname}${slash}In` //Pasta origem dos pdfs
-// let out_folder_XML = `${__dirname}${slash}Out_XML` //Pasta destino do xml
-// let out_folder_JSON = `${__dirname}${slash}Out_JSON` //Pasta destino do xml
-let process_type = ""; //Qual tipo de processo vai ser feito (total, só as referências etc)
 /*
 * processFulltextDocument //Processa o documento inteiro
 * processHeaderDocument //Retira apenas o cabeçalho
