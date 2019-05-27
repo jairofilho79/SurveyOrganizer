@@ -20,7 +20,7 @@ function changeTab(id) {
 //Input Style
 //https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
 
-document.getElementById('researchFile').onchange = () => {
+document.getElementById('openResearchFile').onchange = () => {
     const reader = new FileReader();
     const file = document.getElementById('researchFile').files[0];
 
@@ -237,6 +237,15 @@ function networkGraphDrawing(nodes,links) {
 
 function setKW() {networkGraphDrawing(...keywordPreparation())}
 
+//Research Dropdown
+document.getElementById('researchDropdown').addEventListener('click',() => {
+    document.getElementById('researchDropdown').classList.toggle('is-active');
+})
+document.getElementById('researchDropdown').addEventListener('mouseleave',() => {
+    document.getElementById('researchDropdown').classList.remove('is-active');
+})
+
+//Tabs
 document.getElementById('referencesTab').addEventListener('click',() => {changeTab('references')})
 document.getElementById('keywordTab'   ).addEventListener('click',() => {changeTab('keyword'   )})
 document.getElementById('rawJsonTab'   ).addEventListener('click',() => {changeTab('rawJson'   )})

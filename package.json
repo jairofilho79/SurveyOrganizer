@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/jairofilho79/SurveyOrganizer#readme",
   "dependencies": {
+    "font-awesome": "^4.7.0",
     "inquirer": "^6.3.1",
     "rimraf": "^2.6.3",
     "xmldom": "^0.1.27",

@@ -2,6 +2,7 @@
     <head>
         <title>Survey Organizer</title>
         <link rel="stylesheet" href="Library/bulma.min.css">
+        <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="Css/index.css">
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="http://d3js.org/d3-selection-multi.v1.js"></script>
@@ -12,20 +13,62 @@
     </head>
     <body>
         <div class="columns">
-            <div class="column">
+            <div id="leftBar" class="column">
                 <div id="surveyOrganizer" class="box has-text-centered is-shadowless">Survey Organizer</div>
                 <div class="columns is-multiline">
-                    <div class="box">
-                        Sua pesquisa:
-                        <div id="novaPesquisa">
-                            <input type="file" id="researchFile">
+                    <div class="box width-100">
+                        <div id="researchDropdown" class="dropdown">
+                            <div class="dropdown-trigger">
+                                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                    <span>Research: </span>
+                                    <span class="icon is-small">
+                                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                <div class="dropdown-content">
+                                    <a href="#" class="dropdown-item">
+                                        <label id="newResearch" class="clickable dropdown-item">New Research</label>
+                                    </a>
+                                    <a href="#" class="dropdown-item">
+                                        <input type="file" id="openResearchFile" class="inputfile">
+                                        <label for="openResearchFile" class="clickable dropdown-item">Open Research</label>
+                                    </a>
+                                    <a href="#" class="dropdown-item">
+                                        <input type="file" id="openFounderResearchFile" class="inputfile">
+                                        <label for="openFounderResearchFile" class="clickable dropdown-item">Open Research as Founder</label>
+                                    </a>
+                                    <a href="#" class="dropdown-item">
+                                        <input type="file" id="saveResearchFile" class="inputfile">
+                                        <label for="saveResearchFile" class="clickable dropdown-item">Save Research</label>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="box">
-                        Inserir novos PDFs:
-                        <form action="#" method="post" id="form" enctype="multipart/form-data">
-                            <input id="pdfFile" type="file" name="filetoupload" multiple><br>
-                        </form>
+                    <div class="box width-100">
+                        <div class="dropdown">
+                            <div class="dropdown-trigger">
+                                <button class="button">
+                                    <span><label for="pdfFile">Insert PDFs:</label></span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" role="menu">
+                                <form action="#" method="post" id="form" enctype="multipart/form-data">
+                                    <input id="pdfFile" class="inputfile" type="file" name="filetoupload" multiple><br>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box is-narrow no-pointer">
+                        <div class="dropdown">
+                            <div class="dropdown-trigger">
+                                <button class="button no-pointer">
+                                    <span>Verify Research Hash</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -41,11 +84,11 @@
                     </div>
 
                     <div id="referencesContent">
-                        <svg id="referencesSVG"></svg>
+                        <svg id="referencesSVG" width="600" height="800"></svg>
                         References
                     </div>
                     <div id="keywordContent">
-                        <svg id="keywordSVG" width="800" height="600">
+                        <svg id="keywordSVG" width="600" height="800">
                         </svg>
                     </div>
                     <div id="rawJsonContent">
@@ -57,7 +100,7 @@
             </div>
             <div class="column">
                 <div id="labvis" class="box has-text-centered is-shadowless">Labvis</div>
-                <div class="columns is-multiline">
+                <div id="rightBar" class="columns is-multiline">
                     nao sei ainda
                 </div>
 
