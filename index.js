@@ -22,7 +22,7 @@ function changeTab(id) {
 
 document.getElementById('openResearchFile').onchange = () => {
     const reader = new FileReader();
-    const file = document.getElementById('researchFile').files[0];
+    const file = document.getElementById('openResearchFile').files[0];
 
     reader.onload = function(){
         const res = reader.result;
@@ -164,7 +164,7 @@ function keywordPreparation() {
     return [nodes,links];
 }
 
-function networkGraphDrawing(nodes,links) {
+function networkGraphDrawing(nodes,links, nodeFunction, linkFunction) {
     let color = d3.scaleOrdinal(d3.schemeCategory10);
 
     const drag = simulation => {
@@ -207,7 +207,8 @@ function networkGraphDrawing(nodes,links) {
         .selectAll("line")
         .data(links)
         .join("line")
-        .attr("stroke-width", d => Math.sqrt(d.value));
+        .attr("stroke-width", 5)
+        .on('click',d => linkFunction(d));
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
@@ -217,7 +218,8 @@ function networkGraphDrawing(nodes,links) {
         .join("circle")
         .attr("r", 7)
         .attr("fill", color)
-        .call(drag(simulation));
+        .call(drag(simulation))
+        .on('click',d => nodeFunction(d));
 
     node.append("title")
         .text(d => d.name);
@@ -235,7 +237,46 @@ function networkGraphDrawing(nodes,links) {
     });
 }
 
-function setKW() {networkGraphDrawing(...keywordPreparation())}
+function setKW() {
+    const nodeFunc = (d) => {
+        const arcticle = research.arcticles[d.id]
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1>Title:</h1>  
+                <h3>${arcticle.title}</h3>
+                
+                <br>
+            
+                <h1>Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    const linkFunc = (d) => {
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1>Linked Nodes:</h1>  
+                <h3>${d.source.name} and ${d.target.name}</h3>
+                
+                <br>
+            
+                <h1>Common Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    networkGraphDrawing(...keywordPreparation(),nodeFunc,linkFunc);
+}
 
 //Research Dropdown
 document.getElementById('researchDropdown').addEventListener('click',() => {
