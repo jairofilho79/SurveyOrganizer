@@ -2,11 +2,7 @@
     display:block
 }
 
-#keywordContent {
-    display:none
-}
-
-#rawJsonContent {
+#keywordContent, #rawJsonContent, #newResearchTab, #newResearchContent {
     display:none
 }
 
@@ -30,3 +26,10 @@
 .width-100 {
     width:51%;
 }
+
+.session-title {
+    font-weight: 600;
+    font-size: 170%;
+    font-family: "Adobe Garamond Pro Bold";
+}
+

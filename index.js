@@ -89,6 +89,8 @@ function getResearchFromPDF(folder) {
         })
 }
 
+//Kewwords Visualization
+
 //https://gist.github.com/fancellu/2c782394602a93921faff74e594d1bb1
 
 function keywordPreparation() {
@@ -245,12 +247,12 @@ function setKW() {
         for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
         rightBar.innerHTML =
             `<div>
-                <h1>Title:</h1>  
+                <h1 class="session-title">Title:</h1>  
                 <h3>${arcticle.title}</h3>
                 
                 <br>
             
-                <h1>Keywords:</h1>
+                <h1 class="session-title">Keywords:</h1>
                 <ul>
                     ${htmlKW}
                 </ul> 
@@ -263,12 +265,12 @@ function setKW() {
         for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
         rightBar.innerHTML =
             `<div>
-                <h1>Linked Nodes:</h1>  
+                <h1 class="session-title">Linked Nodes:</h1>  
                 <h3>${d.source.name} and ${d.target.name}</h3>
                 
                 <br>
             
-                <h1>Common Keywords:</h1>
+                <h1 class="session-title">Common Keywords:</h1>
                 <ul>
                     ${htmlKW}
                 </ul> 
@@ -281,12 +283,77 @@ function setKW() {
 //Research Dropdown
 document.getElementById('researchDropdown').addEventListener('click',() => {
     document.getElementById('researchDropdown').classList.toggle('is-active');
-})
+});
 document.getElementById('researchDropdown').addEventListener('mouseleave',() => {
     document.getElementById('researchDropdown').classList.remove('is-active');
+});
+
+//NewResearch
+document.getElementById('newResearch').addEventListener('click',() => {
+    newResearchFormSetup('none','block')
 })
 
+document.getElementById('createNewResearch').addEventListener('click',() => {
+    const ids = ['newResearchFullname','newResearchEmail','newResearchOrganization','newResearchMotivation'];
+    const isEmpty = isEmptyInput(ids)
+    if(!isEmpty) {
+        let inputData = getDataFromForm(ids);
+        research['author'] = inputData['newResearchFullname'];
+        research['authorEmail'] = inputData['newResearchEmail'];
+        research['authorOrganization'] = inputData['newResearchOrganization'];
+        research['authorMotivation'] = inputData['newResearchMotivation'];
+        const date = new Date();
+        research['creationDate'] = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
+        newResearchFormSetup('block','none');
+        //Mensagem de concluído com sucesso!
+    } else {
+        document.getElementById(isEmpty).focus(); return;
+    }
+})
+
+function newResearchFormSetup(displayCurrent,displayNewResearch) {
+    document.getElementById('referencesTab').style.display = displayCurrent;
+    document.getElementById('referencesContent').style.display = displayCurrent;
+    document.getElementById('keywordTab').style.display = displayCurrent;
+    document.getElementById('keywordContent').style.display = displayCurrent;
+    document.getElementById('researchConfigTab').style.display = displayCurrent;
+    document.getElementById('researchConfigContent').style.display = displayCurrent;
+
+    document.getElementById('newResearchTab').style.display = displayNewResearch;
+    document.getElementById('newResearchTab').classList.toggle('is-active');
+    document.getElementById('newResearchContent').style.display = displayNewResearch;
+}
+
+function getDataFromForm(ids) {
+    let data = {}
+    for (let id of ids) {
+        data[id] = document.getElementById(id).value
+        document.getElementById(id).value = ''
+    }
+    return data
+}
+
+function isEmptyInput(ids) {
+    for (let id of ids) {
+        if(document.getElementById(id).value === '') return id;
+    }
+    return false;
+}
+
+//JSON research visualization
+
+function refreshResearchView() {
+    const content = document.getElementById('researchConfigContent');
+    if(Object.keys(research).length !== 0) {
+        content.innerHTML = JSON.stringify(research);
+    } else {
+        content.innerText = "There's no Research file yet."
+    }
+}
+
 //Tabs
-document.getElementById('referencesTab').addEventListener('click',() => {changeTab('references')})
-document.getElementById('keywordTab'   ).addEventListener('click',() => {changeTab('keyword'   )})
-document.getElementById('rawJsonTab'   ).addEventListener('click',() => {changeTab('rawJson'   )})
+document.getElementById('referencesTab'    ).addEventListener('click',() => {changeTab('references'    )})
+document.getElementById('keywordTab'       ).addEventListener('click',() => {changeTab('keyword'       )})
+document.getElementById('researchConfigTab').addEventListener('click',() => {changeTab('researchConfig');
+                                                                             refreshResearchView();
+                                                                            })

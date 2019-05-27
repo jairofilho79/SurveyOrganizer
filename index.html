@@ -13,9 +13,10 @@
     </head>
     <body>
         <div class="columns">
-            <div id="leftBar" class="column">
+            <!--Left Side-->
+            <div class="column">
                 <div id="surveyOrganizer" class="box has-text-centered is-shadowless">Survey Organizer</div>
-                <div class="columns is-multiline">
+                <div id="leftBar" class="columns is-multiline">
                     <div class="box width-100">
                         <div id="researchDropdown" class="dropdown">
                             <div class="dropdown-trigger">
@@ -73,13 +74,15 @@
                 </div>
 
             </div>
+            <!--Center Side-->
             <div class="column is-flex is-half">
                 <div class="column">
                     <div class="tabs is-centered">
                         <ul>
                             <li id="referencesTab" class="is-active"><a>References</a></li>
                             <li id="keywordTab"><a>Keywords</a></li>
-                            <li id="rawJsonTab"><a>Raw JSON</a></li>
+                            <li id="researchConfigTab"><a>Research Components</a></li>
+                            <li id="newResearchTab"><a>New Research</a></li>
                         </ul>
                     </div>
 
@@ -91,17 +94,24 @@
                         <svg id="keywordSVG" width="600" height="800">
                         </svg>
                     </div>
-                    <div id="rawJsonContent">
-                        {hello,world}
+                    <div id="researchConfigContent">
+                    </div>
+                    <div id="newResearchContent">
+                        <input id="newResearchFullname" class="input" type="text" placeholder="Insert your fullname.">
+                        <input id="newResearchEmail" class="input" type="email" placeholder="Insert your email.">
+                        <input id="newResearchOrganization" class="input" type="text" placeholder="Insert your organization.">
+                        <textarea id="newResearchMotivation" class="textarea" placeholder="Insert your research motivation."></textarea>
+                        <br>
+                        <button id="createNewResearch" class="button is-primary">Create Research</button>
                     </div>
 
 
                 </div>
             </div>
+            <!--Right Side-->
             <div class="column">
                 <div id="labvis" class="box has-text-centered is-shadowless">Labvis</div>
                 <div id="rightBar" class="columns is-multiline">
-                    nao sei ainda
                 </div>
 
             </div>
