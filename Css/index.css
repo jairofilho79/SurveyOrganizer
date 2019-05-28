@@ -2,7 +2,7 @@
     display:block
 }
 
-#keywordContent, #rawJsonContent, #newResearchTab, #newResearchContent {
+#keywordContent, #rawJsonContent, #newResearchTab, #newResearchContent, #pdfLoadingIcon {
     display:none
 }
 

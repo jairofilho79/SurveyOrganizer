@@ -41,6 +41,10 @@ document.getElementById('openResearchFile').onchange = () => {
 }
 
 document.getElementById('pdfFile').onchange = () => {
+    document.getElementById('pdfLoadingIcon').style.display = 'block'
+    if(Object.keys(research).length === 0) {
+        newResearchFormSetup('none','block')
+    }
     const xhr = new XMLHttpRequest();
 
     let files = [...document.getElementById('pdfFile').files];
@@ -81,73 +85,19 @@ function getResearchFromPDF(folder) {
         // .then(response => response.json())
         .then(response => response.text())
         .then(res => {
+            if(!research.hasOwnProperty('arcticles')) research.arcticles = []
+            research.arcticles = research.arcticles.concat(JSON.parse(res));
             console.log(res);
-            console.log("Funfou, porra!");
+            document.getElementById('pdfLoadingIcon').style.display = 'none'
         })
         .catch(e => {
             console.log(e);
+            document.getElementById('pdfLoadingIcon').style.display = 'none'
         })
 }
 
 //Kewwords Visualization
-
-//https://gist.github.com/fancellu/2c782394602a93921faff74e594d1bb1
-
 function keywordPreparation() {
-
-    /*
-    * Links
-    *
-    * [
-        {
-            "source": 1,
-            "target": 2,
-            "type": "KNOWS",
-            "since": 2010
-        },
-        {
-            "source": 1,
-            "target": 3,
-            "type": "FOUNDED"
-        },
-        {
-            "source": 2,
-            "target": 3,
-            "type": "WORKS_ON"
-        },
-        {
-            "source": 3,
-            "target": 4,
-            "type": "IS_A"
-        }
-    ]
-    * */
-    /*
-    * Nodes
-    *
-    * [
-        {
-            "name": "Peter",
-            "label": "Person",
-            "id": 1
-        },
-        {
-            "name": "Michael",
-            "label": "Person",
-            "id": 2
-        },
-        {
-            "name": "Neo4j",
-            "label": "Database",
-            "id": 3
-        },
-        {
-            "name": "Graph Database",
-            "label": "Database",
-            "id": 4
-        }
-    ]
-    * */
 
     if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
     let nodes = []

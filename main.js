@@ -72,14 +72,16 @@ const server = http.createServer((request, response) => {
 
             //Criar arquivo de pesquisa;
 
+            const arcticles = getResearchFromJSON(outJSON);
+
             rimraf.sync(folderPath);
             rimraf.sync(outXML);
             rimraf.sync(outJSON);
 
             response.statusCode = 200;
-            response.end("Vem a pesquisa extraída do PDF");
+            response.end(JSON.stringify(arcticles));
 
-        } else {response.statusCode = 404; response.end("Deu ruim");}
+        } else {response.statusCode = 404; response.end("The directory given was not found.");}
 
 
     } else {
@@ -106,6 +108,137 @@ function getFolderName() {
     return String.fromCharCode(...numbersOk);
 }
 
+function getResearchFromJSON(json_folder) {
+    let all_arcticles = []
+    fs.readdirSync(json_folder).forEach(file => {
+        const json_file = json_folder+file
+        let researchJSON = {}
+        const json = JSON.parse(fs.readFileSync(json_file, "utf8"));
+
+// Título* - Outro jeito de acessar o título --------------------------------------------------------------------------//
+        try {
+            researchJSON['title'] = json.TEI[0].teiHeader[0].fileDesc[0].sourceDesc[0].biblStruct[0].analytic[0].title[0]._text;
+        }
+        catch(err) {
+            console.log(err)
+            researchJSON['title'] = undefined
+        }
+
+// Data da Publicação -------------------------------------------------------------------------------------------------//
+        try {
+            researchJSON['publicationDate'] = json.TEI[0].teiHeader[0].fileDesc[0].publicationStmt[0].date[0]._text;
+        }
+        catch(err) {
+            console.log(err)
+            researchJSON['publicationDate'] = undefined
+        }
+
+
+// Autores ------------------------------------------------------------------------------------------------------------//
+        try {
+            const authors = json.TEI[0].teiHeader[0].fileDesc[0].sourceDesc[0].biblStruct[0].analytic[0].author;
+            researchJSON['authors'] = []
+            for(let author of authors) {
+                researchJSON['authors'].push({
+                    "surname": author.persName[0].surname[0]._text,
+                    "forename": author.persName[0].forename[0]._text
+                });
+            }
+        }
+        catch(err) {
+            console.log(err)
+            researchJSON['authors'] = undefined
+        }
+
+// DOI ----------------------------------------------------------------------------------------------------------------//
+        try {
+            researchJSON['doi'] = json.TEI[0].teiHeader[0].fileDesc[0].sourceDesc[0].biblStruct[0].idno[0]._text;
+        }
+        catch(err) {
+            console.log(err)
+            researchJSON['doi'] = undefined
+        }
+
+// Keyword ------------------------------------------------------------------------------------------------------------//
+
+        try {
+            researchJSON['keywords'] = [];
+
+            const terms = json.TEI[0].teiHeader[0].profileDesc[0].textClass[0].keywords[0].term;
+            for(let l = 0; l< terms.length; l++) {
+                researchJSON['keywords'].push(terms[l]._text);
+            }
+        }
+        catch(err) {
+            console.log(err)
+            researchJSON['keywords'] = undefined
+        }
+
+
+// Abstract -----------------------------------------------------------------------------------------------------------//
+
+        try {
+            const div = json.TEI[0].teiHeader[0].profileDesc[0].abstract[0].div[0]
+            if(div.hasOwnProperty('head')){
+                researchJSON['abstract'] = div.head[0]._text
+            }else{
+                researchJSON['abstract'] = div.p[0]._text
+            }
+        }
+        catch(err) {
+            console.log(err);
+            researchJSON['abstract'] = ''
+        }
+
+// Bibliografia -------------------------------------------------------------------------------------------------------//
+        let indice;
+        for(let d in json.TEI[0].text[0].back[0].div) {
+            if(json.TEI[0].text[0].back[0].div[d].hasOwnProperty('listBibl')) {
+                indice = +d;
+            }
+        }
+        const bibleStruct = json.TEI[0].text[0].back[0].div[indice].listBibl[0].biblStruct;
+
+        researchJSON['references'] = []
+
+        for(let bl of bibleStruct) {
+            try{
+                let getInfo;
+                if(bl.hasOwnProperty('analytic')) {
+                    getInfo = bl.analytic[0]
+                }else {
+                    getInfo = bl.monogr[0]
+                }
+                if(getInfo.title[0]._text == null) continue
+
+                let reference = {};
+
+                const authors = getInfo.author;
+                let jsonAuthors = []
+
+                for(let author of authors) {
+                    jsonAuthors.push({
+                        "forename": author.persName[0].forename[0]._text,
+                        "surname": author.persName[0].surname[0]._text
+                    })
+                }
+
+                reference['title'] = getInfo.title[0]._text;
+                reference['authors'] = jsonAuthors
+                reference['publication'] = bl.monogr[0].title[0]._text
+                reference['publicationYear'] = bl.monogr[0].imprint[0].date[0]._attr.when._value
+
+                researchJSON['references'].push(reference)
+
+            }catch(err){
+                console.log(err)
+            }
+        }
+        all_arcticles.push(researchJSON);
+    })
+    return all_arcticles;
+}
+
 function getUrlVars(url) {
     let myJson = {};
     let hashes = url.slice(url.indexOf('?') + 1).split('&');
@@ -118,7 +251,7 @@ function getUrlVars(url) {
 
 console.log(`Foi ao ligar o servidor!`);
 
-function pdf2XML(in_folder,out_folder_XML) {
+function pdf2XML(in_folder,out_folder_XML, process_type="") {
 
     execSync(`node main.js -in ${in_folder} -out ${out_folder_XML} ${process_type}`,{cwd: grobid_client_path});
     console.log('Terminou pdf2xml');
