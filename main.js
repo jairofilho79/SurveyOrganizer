@@ -140,8 +140,8 @@ function getResearchFromJSON(json_folder) {
             researchJSON['authors'] = []
             for(let author of authors) {
                 researchJSON['authors'].push({
-                    "surname": author.persName[0].surname[0]._text,
-                    "forename": author.persName[0].forename[0]._text
+                    "forename": author.persName[0].forename? author.persName[0].forename[0]._text : "",
+                    "surname": author.persName[0].surname ? author.persName[0].surname[0]._text : ""
                 });
             }
         }
@@ -218,8 +218,8 @@ function getResearchFromJSON(json_folder) {
 
                 for(let author of authors) {
                     jsonAuthors.push({
-                        "forename": author.persName[0].forename[0]._text,
-                        "surname": author.persName[0].surname[0]._text
+                        "forename": author.persName[0].forename? author.persName[0].forename[0]._text : "",
+                        "surname": author.persName[0].surname ? author.persName[0].surname[0]._text : ""
                     })
                 }
 

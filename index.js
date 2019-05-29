@@ -244,10 +244,11 @@ document.getElementById('newResearch').addEventListener('click',() => {
 })
 
 document.getElementById('createNewResearch').addEventListener('click',() => {
-    const ids = ['newResearchFullname','newResearchEmail','newResearchOrganization','newResearchMotivation'];
+    const ids = ['newResearchTitle','newResearchFullname','newResearchEmail','newResearchOrganization','newResearchMotivation'];
     const isEmpty = isEmptyInput(ids)
     if(!isEmpty) {
         let inputData = getDataFromForm(ids);
+        research['title'] = inputData['newResearchTitle'];
         research['author'] = inputData['newResearchFullname'];
         research['authorEmail'] = inputData['newResearchEmail'];
         research['authorOrganization'] = inputData['newResearchOrganization'];
@@ -263,11 +264,12 @@ document.getElementById('createNewResearch').addEventListener('click',() => {
 
 function newResearchFormSetup(displayCurrent,displayNewResearch) {
     document.getElementById('referencesTab').style.display = displayCurrent;
-    document.getElementById('referencesContent').style.display = displayCurrent;
+    document.getElementById('referencesContent').style.display = 'none';
     document.getElementById('keywordTab').style.display = displayCurrent;
-    document.getElementById('keywordContent').style.display = displayCurrent;
+    document.getElementById('keywordContent').style.display = 'none';
     document.getElementById('researchConfigTab').style.display = displayCurrent;
-    document.getElementById('researchConfigContent').style.display = displayCurrent;
+    document.getElementById('researchConfigContent').style.display = 'none';
+    document.getElementById(ActiveTab+'Content').style.display = displayCurrent;
 
     document.getElementById('newResearchTab').style.display = displayNewResearch;
     document.getElementById('newResearchTab').classList.toggle('is-active');
@@ -290,20 +292,54 @@ function isEmptyInput(ids) {
     return false;
 }
 
+//Discart Research
+document.getElementById('discartResearch').addEventListener('click', () => {
+    research = {}
+    refreshApp()
+    //Alert the user
+})
+
 //JSON research visualization
 
 function refreshResearchView() {
     const content = document.getElementById('researchConfigContent');
     if(Object.keys(research).length !== 0) {
-        content.innerHTML = JSON.stringify(research);
+        let liArcticles = ``;
+        for (let a in research.arcticles) {
+            liArcticles += `<li id="arcticle--${+a}">${research.arcticles[a].title}</li>    `
+        }
+        content.innerHTML =
+            `
+                <h1 class="session-title">Research title</h1>
+                    <div id="researchViewTitle">${research.title}</div>
+                <h1 class="session-title">Research author</h1>
+                    <div id="researchViewAuthor">${research.author}</div>
+                <h1 class="session-title">Research Author's e-mail address</h1>
+                    <div id="researchViewAuthorEmail">${research.authorEmail}</div>
+                <h1 class="session-title">Research Author's motivation</h1>
+                    <div id="researchViewAuthorMotivation">${research.authorMotivation}</div>
+                <h1 class="session-title">Research Articles</h1>
+                    <div id="researchViewArcticles"><ul>${liArcticles}</ul></div>
+            `
     } else {
         content.innerText = "There's no Research file yet."
     }
 }
 
+//Refresh App
+function refreshApp() {
+    refreshResearchView()
+    d3.select("#referencesSVG").selectAll("*").remove()
+    d3.select("#keywordSVG").selectAll("*").remove()
+}
+
 //Tabs
 document.getElementById('referencesTab'    ).addEventListener('click',() => {changeTab('references'    )})
-document.getElementById('keywordTab'       ).addEventListener('click',() => {changeTab('keyword'       )})
-document.getElementById('researchConfigTab').addEventListener('click',() => {changeTab('researchConfig');
-                                                                             refreshResearchView();
-                                                                            })
+document.getElementById('keywordTab'       ).addEventListener('click',() => {
+    changeTab('keyword')
+    setKW()
+})
+document.getElementById('researchConfigTab').addEventListener('click',() => {
+    changeTab('researchConfig');
+    refreshResearchView();
+})
