@@ -2,20 +2,29 @@
 let research = {}
 const backendURI = 'http://127.0.0.1:8080'
 //Tabs Changer
-let ActiveTab = 'references';
-function changeTab(id) {
-    const idTab = id+'Tab';
-    const actTab = ActiveTab+'Tab';
-    const idCont = id+'Content';
-    const actCont = ActiveTab+'Content';
+let ActiveTab = ['researchConfig'];
+function changeTab(ids) {
 
-    document.getElementById(actTab).classList.remove('is-active')
-    document.getElementById(idTab).classList.add('is-active')
+    for(let act of ActiveTab) {
+        const actTab = act+'Tab';
+        const actCont = act+'Content';
 
-    document.getElementById(actCont).style.display = 'none';
-    document.getElementById(idCont).style.display = 'block';
+        document.getElementById(actTab).classList.remove('is-active')
+        document.getElementById(actCont).style.display = 'none';
+    }
 
-    ActiveTab = id;
+    for(let id of ids) {
+        const idTab = id+'Tab';
+        const idCont = id+'Content';
+
+        document.getElementById(idTab).classList.add('is-active')
+        document.getElementById(idCont).style.display = 'block';
+    }
+
+    ActiveTab = [...ids];
+
+    //Toda vez que trocar de aba, a parte direita da tela deve ser limpada.
+    document.getElementById('rightBar').innerHTML = '';
 }
 
 //Input Style
@@ -24,10 +33,13 @@ function changeTab(id) {
 function clearResearch() {
     research = {
         "author": "",
-        "arcticles": []
+        "arcticles": [],
+        "hasResearch": false
     }
 }
+
 clearResearch();
+refreshResearchView();
 
 document.getElementById('openResearchFile').onchange = () => {
     const reader = new FileReader();
@@ -37,13 +49,11 @@ document.getElementById('openResearchFile').onchange = () => {
         const res = reader.result;
 
         if(Object.keys(research).length !== 0) {
-            if(confirm('Are you sure you want to override the current Research?')) {
-                research = JSON.parse(res);
-            }
-        } else {
-            research = JSON.parse(res);
+            if(!confirm('Are you sure you want to override the current Research?')) {return;}
         }
-        setKW();
+        research = JSON.parse(res);
+        research.hasResearch = true;
+        setKeywords();
     };
 
     reader.readAsText(file);
@@ -97,10 +107,9 @@ document.getElementById('bibtexFile').onchange = () => {
         const res = reader.result;
 
         const obj = BibtexParser(res);
-        console.log(obj);
         bib2research(obj.entries)
-        console.log(research);
-        setKW();
+        research.hasResearch = true;
+        setKeywords();
     };
 
     reader.readAsText(file);
@@ -153,7 +162,7 @@ function getResearchFromPDF(folder) {
         })
 }
 
-//Kewwords Visualization
+//Keywords Visualization
 function keywordPreparation() {
 
     if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
@@ -173,7 +182,7 @@ function keywordPreparation() {
     return [nodes,links];
 }
 
-function networkGraphDrawing(nodes,links, nodeFunction, linkFunction) {
+function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
     let color = d3.scaleOrdinal(d3.schemeCategory10);
 
     const drag = simulation => {
@@ -201,12 +210,14 @@ function networkGraphDrawing(nodes,links, nodeFunction, linkFunction) {
             .on("end", dragended);
     }
 
-    const svg = d3.select("#keywordSVG"),
+    const svg = d3.select(id),
         width = +svg.attr("width"),
         height = +svg.attr("height")
 
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id))
+        .force("link", d3.forceLink(links)
+            .id(d => d.id)
+            .distance(function(d) {return 300;}).strength(0.1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -246,7 +257,7 @@ function networkGraphDrawing(nodes,links, nodeFunction, linkFunction) {
     });
 }
 
-function setKW() {
+function setKeywords() {
     refreshApp();
 
     const nodeFunc = (d) => {
@@ -275,7 +286,7 @@ function setKW() {
         rightBar.innerHTML =
             `<div>
                 <h1 class="session-title">Linked Nodes:</h1>  
-                <h3>${d.source.name} and ${d.target.name}</h3>
+                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
                 
                 <br>
             
@@ -286,7 +297,179 @@ function setKW() {
             </div>
             `
     }
-    networkGraphDrawing(...keywordPreparation(),nodeFunc,linkFunc);
+    networkGraphDrawing("#keywordSVG",...keywordPreparation(),nodeFunc,linkFunc);
+}
+
+function setReferences() {
+    refreshApp();
+
+    const nodeFunc = (d) => {
+        const arcticle = research.arcticles[d.id]
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Title:</h1>  
+                <h3>${arcticle.title}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    const linkFunc = (d) => {
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Linked Nodes:</h1>  
+                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Common Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    networkGraphDrawing("#referencesSVG",...keywordPreparation(),nodeFunc,linkFunc);
+}
+
+function setAuthor() {
+    refreshApp();
+
+    const nodeFunc = (d) => {
+        const arcticle = research.arcticles[d.id]
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Title:</h1>  
+                <h3>${arcticle.title}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    const linkFunc = (d) => {
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Linked Nodes:</h1>  
+                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Common Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    networkGraphDrawing("#authorSVG",...keywordPreparation(),nodeFunc,linkFunc);
+}
+
+function setPublicationYear() {
+    refreshApp();
+
+    const nodeFunc = (d) => {
+        const arcticle = research.arcticles[d.id]
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Title:</h1>  
+                <h3>${arcticle.title}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    const linkFunc = (d) => {
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Linked Nodes:</h1>  
+                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Common Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    networkGraphDrawing("#publicationYearSVG",...keywordPreparation(),nodeFunc,linkFunc);
+}
+
+function setTaxonomy() {
+    refreshApp();
+
+    const nodeFunc = (d) => {
+        const arcticle = research.arcticles[d.id]
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Title:</h1>  
+                <h3>${arcticle.title}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    const linkFunc = (d) => {
+        const rightBar = document.getElementById('rightBar')
+        let htmlKW = "";
+        for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
+        rightBar.innerHTML =
+            `<div>
+                <h1 class="session-title">Linked Nodes:</h1>  
+                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
+                
+                <br>
+            
+                <h1 class="session-title">Common Keywords:</h1>
+                <ul>
+                    ${htmlKW}
+                </ul> 
+            </div>
+            `
+    }
+    networkGraphDrawing("#taxonomySVG",...keywordPreparation(),nodeFunc,linkFunc);
 }
 
 //Research Dropdown
@@ -315,6 +498,7 @@ document.getElementById('createNewResearch').addEventListener('click',() => {
         const date = new Date();
         research['creationDate'] = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
         newResearchFormSetup('block','none');
+        research.hasResearch = true;
         //Mensagem de concluído com sucesso!
     } else {
         document.getElementById(isEmpty).focus(); return;
@@ -362,7 +546,7 @@ document.getElementById('discartResearch').addEventListener('click', () => {
 
 function refreshResearchView() {
     const content = document.getElementById('researchConfigContent');
-    if(Object.keys(research).length !== 0) {
+    if(research.hasResearch) {
         let liArcticles = ``;
         for (let a in research.arcticles) {
             liArcticles += `<li id="arcticle--${+a}">${research.arcticles[a].title}</li>    `
@@ -393,12 +577,33 @@ function refreshApp() {
 }
 
 //Tabs
-document.getElementById('referencesTab'    ).addEventListener('click',() => {changeTab('references'    )})
-document.getElementById('keywordTab'       ).addEventListener('click',() => {
-    changeTab('keyword')
-    setKW()
-})
 document.getElementById('researchConfigTab').addEventListener('click',() => {
-    changeTab('researchConfig');
+    changeTab(['researchConfig']);
     refreshResearchView();
+})
+document.getElementById('vizTab').addEventListener('click',() => {
+    changeTab(['viz']);
+})
+
+//VizTabs
+document.getElementById('referencesTab').addEventListener('click',() => {
+    changeTab(['viz','references']);
+    setReferences();
+})
+document.getElementById('keywordTab').addEventListener('click',() => {
+    changeTab(['viz','keyword'])
+    setKeywords();
+})
+document.getElementById('authorTab').addEventListener('click',() => {
+    changeTab(['viz','author']);
+    setAuthor();
+
+})
+document.getElementById('publicationYearTab').addEventListener('click',() => {
+    changeTab(['viz','publicationYear']);
+    setPublicationYear();
+})
+document.getElementById('taxonomyTab').addEventListener('click',() => {
+    changeTab(['viz','taxonomy']);
+    setTaxonomy();
 })

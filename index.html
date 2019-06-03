@@ -95,21 +95,47 @@
                 <div class="column">
                     <div class="tabs is-centered">
                         <ul>
-                            <li id="referencesTab" class="is-active"><a>References</a></li>
-                            <li id="keywordTab"><a>Keywords</a></li>
-                            <li id="researchConfigTab"><a>Research Components</a></li>
+                            <li id="researchConfigTab" class="is-active"><a>Research Components</a></li>
+                            <li id="vizTab"><a>Visualizations</a></li>
                             <li id="newResearchTab"><a>New Research</a></li>
                         </ul>
                     </div>
 
-                    <div id="referencesContent">
-                        <svg id="referencesSVG" width="600" height="500"></svg>
+                    <div id="researchConfigContent"></div>
+
+                    <div id="vizContent">
+
+                        <div class="tabs is-centered">
+                            <ul>
+                                <li id="keywordTab"><a>Keywords</a></li>
+                                <li id="referencesTab"><a>References</a></li>
+                                <li id="authorTab"><a>Author</a></li>
+                                <li id="publicationYearTab"><a>Publication Year</a></li>
+                                <li id="taxonomyTab"><a>Taxonomy</a></li>
+                            </ul>
+                        </div>
+
+
+                        <div id="keywordContent">
+                            <svg id="keywordSVG" width="600" height="500"></svg>
+                        </div>
+                        <div id="referencesContent">
+                            <svg id="referencesSVG" width="600" height="500"></svg>
+                        </div>
+                        <div id="authorContent">
+                            <svg id="authorSVG" width="600" height="500"></svg>
+                        </div>
+                        <div id="publicationYearContent">
+                            <svg id="publicationYearSVG" width="600" height="500"></svg>
+                        </div>
+                        <div id="taxonomyContent">
+                            <svg id="taxonomySVG" width="600" height="500"></svg>
+                        </div>
+
                     </div>
-                    <div id="keywordContent">
-                        <svg id="keywordSVG" width="600" height="500"></svg>
-                    </div>
-                    <div id="researchConfigContent">
-                    </div>
+
+
+
                     <div id="newResearchContent">
                         <input id="newResearchTitle" class="input" type="text" placeholder="Insert the research title.">
                         <input id="newResearchFullname" class="input" type="text" placeholder="Insert your fullname.">
@@ -126,7 +152,7 @@
             <!--Right Side-->
             <div class="column">
                 <div id="labvis" class="box has-text-centered is-shadowless">Labvis</div>
-                <div id="rightBar" class="columns is-multiline">
+                <div id="rightBar">
                 </div>
 
             </div>

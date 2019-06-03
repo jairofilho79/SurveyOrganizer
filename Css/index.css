@@ -1,8 +1,8 @@
-#referencesContent {
+#researchConfigContent {
     display:block
 }
 
-#keywordContent, #rawJsonContent, #newResearchTab, #newResearchContent, #pdfLoadingIcon {
+#keywordContent, #referencesContent, #newResearchTab, #vizContent, #newResearchContent, #pdfLoadingIcon {
     display:none
 }
 
