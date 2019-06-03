@@ -80,6 +80,24 @@ document.getElementById('pdfFile').onchange = () => {
 
 }
 
+document.getElementById('saveResearchFile').addEventListener('click', () => {
+    saveResearch();
+    //Alert the user
+})
+
+function saveResearch() {
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(research)));
+    element.setAttribute('download', 'myResearch.json');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
 function getResearchFromPDF(folder) {
     fetch(`${backendURI}/getResearchJSON/?folder=${folder}`)
         // .then(response => response.json())
