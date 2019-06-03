@@ -1,3 +1,4 @@
+
 let research = {}
 const backendURI = 'http://127.0.0.1:8080'
 //Tabs Changer
@@ -19,6 +20,14 @@ function changeTab(id) {
 
 //Input Style
 //https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
+
+function clearResearch() {
+    research = {
+        "author": "",
+        "arcticles": []
+    }
+}
+clearResearch();
 
 document.getElementById('openResearchFile').onchange = () => {
     const reader = new FileReader();
@@ -78,6 +87,36 @@ document.getElementById('pdfFile').onchange = () => {
         xhr.send(form);
     }
 
+}
+
+document.getElementById('bibtexFile').onchange = () => {
+    const reader = new FileReader();
+    const file = document.getElementById('bibtexFile').files[0];
+
+    reader.onload = function(){
+        const res = reader.result;
+
+        const obj = BibtexParser(res);
+        console.log(obj);
+        bib2research(obj.entries)
+        console.log(research);
+        setKW();
+    };
+
+    reader.readAsText(file);
+}
+
+function bib2research(bib) {
+    for(let arcticle of bib) {
+        const f = arcticle.Fields
+        research.arcticles.push({
+            "author": f.author,
+            "doi": f.doi,
+            "keywords": f.keywords.split(', '),
+            "title": f.title,
+            "publicationYear": f.year,
+        })
+    }
 }
 
 document.getElementById('saveResearchFile').addEventListener('click', () => {
@@ -208,6 +247,8 @@ function networkGraphDrawing(nodes,links, nodeFunction, linkFunction) {
 }
 
 function setKW() {
+    refreshApp();
+
     const nodeFunc = (d) => {
         const arcticle = research.arcticles[d.id]
         const rightBar = document.getElementById('rightBar')
@@ -312,7 +353,7 @@ function isEmptyInput(ids) {
 
 //Discart Research
 document.getElementById('discartResearch').addEventListener('click', () => {
-    research = {}
+    clearResearch();
     refreshApp()
     //Alert the user
 })

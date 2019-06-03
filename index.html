@@ -65,6 +65,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="box width-100">
+                        <div class="dropdown">
+                            <div class="dropdown-trigger">
+                                <button class="button">
+                                    <span><label for="bibtexFile">Insert BibTex:</label></span>
+                                    <!--<i id="pdfLoadingIcon" class="fa fa-spinner fa-spin" style="font-size:24px"></i>-->
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" role="menu">
+                                <input id="bibtexFile" class="inputfile" type="file"><br>
+                            </div>
+                        </div>
+                    </div>
                     <div class="box is-narrow no-pointer">
                         <div class="dropdown">
                             <div class="dropdown-trigger">
@@ -119,6 +132,7 @@
             </div>
         </div>
 
+        <script src="node_modules/bib2json/Parser.js"></script>
         <script src="index.js"></script>
     </body>
 </html>
