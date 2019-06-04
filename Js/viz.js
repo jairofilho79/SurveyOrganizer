@@ -8,7 +8,7 @@ let currentVizFunction = "";
 * */
 function keywordPreparation() {
 
-    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
+    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
     let nodes = []
     let links = []
     const arcticles = research.arcticles;
@@ -16,9 +16,13 @@ function keywordPreparation() {
         nodes.push({"name": arcticles[a].title, "id": a});
         for(let art = a+1; art < arcticles.length; art++) {
             const common = arcticles[a].keywords.filter(function(obj) { return arcticles[art].keywords.indexOf(obj) !== -1; });
+            const ind = common.length/(arcticles[a].keywords.length + arcticles[art].keywords.length-common.length);
+            const r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
+            const g = "00"
+            const b = Math.round(255*ind).toString(16).toLocaleUpperCase()
             if(common.length > 0) {
                 links.push({"source": a, "target": art, "type": JSON.stringify(common),
-                    "strokeOpacity": common.length/(arcticles[a].keywords.length + arcticles[art].keywords.length)})
+                    "strokeColor": "#" + r + g + b})
             }
         }
     };
@@ -68,10 +72,13 @@ function authorPreparation() {
         nodes.push({"name": arcticles[a].title, "id": a});
         for(let art = a+1; art < arcticles.length; art++) {
             const common = arcticles[a].author.split(' and ').filter(function(obj) { return arcticles[art].author.split(' and ').indexOf(obj) !== -1; });
+            const ind = common.length/(arcticles[a].author.split(' and ').length + arcticles[art].author.split(' and ').length-common.length);
+            const r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
+            const g = "00"
+            const b = Math.round(255*ind).toString(16).toLocaleUpperCase()
             if(common.length > 0) {
                 links.push({"source": a, "target": art, "type": JSON.stringify(common),
-                    "strokeOpacity":
-                        common.length/(arcticles[a].author.split(' and ').length + arcticles[art].author.split(' and ').length)})
+                    "strokeColor": "#" + r + g + b})
             }
         }
     };
@@ -167,12 +174,12 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     const link = svg.append("g")
-        .attr("stroke", "#999")
         .selectAll("line")
         .data(links)
         .join("line")
+        .attr("stroke", d => {console.log(d.strokeColor); return d.strokeColor})
         .attr("stroke-width", 5)
-        .attr("stroke-opacity", d => { return d.strokeOpacity ? 1*d.strokeOpacity : 1})
+        .attr("stroke-opacity", 1)
         .on('click',d => linkFunction(d));
 
     const node = svg.append("g")

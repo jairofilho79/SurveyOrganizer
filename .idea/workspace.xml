@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4661ba65-7a00-458c-be8f-5850651a2f46" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Js/tabs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Js/viz.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/8JLSIUT/okada2018.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Js/viz.js" beforeDir="false" afterPath="$PROJECT_DIR$/Js/viz.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -18,44 +14,12 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-663333029">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.open.time.36" value="1" />
-          <entry key="project.opened" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="js" value="4" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="JavaScript" value="4" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="html" value="14" />
-          <entry key="js" value="1733" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="HTML" value="17" />
-          <entry key="JavaScript" value="1730" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
+            <state relative-caret-position="708">
               <caret line="131" column="48" selection-start-line="131" selection-start-column="37" selection-end-line="131" selection-end-column="48" />
               <folding>
                 <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
@@ -67,42 +31,35 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Js/viz.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="73" column="24" selection-start-line="73" selection-start-column="24" selection-end-line="73" selection-end-column="24" />
+            <state relative-caret-position="6">
+              <caret line="8" column="30" lean-forward="true" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
               <folding>
                 <element signature="n#!!block;n#keywordPreparation#0" />
-                <element signature="n#!!block;n#keywordPreparation#1" />
-                <element signature="n#!!block;n#keywordPreparation#4" />
-                <element signature="n#!!block;n#networkGraphDrawing#0" />
+                <element signature="n#!!block;n#referencesPreparation#0" />
+                <element signature="n#!!block;n#authorPreparation#0" />
+                <element signature="n#!!block;n#publicationYearPreparation#0" />
+                <element signature="n#!!block;n#taxonomyPreparation#0" />
                 <element signature="n#!!block;n#removeSVGContent#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="337" column="45" selection-start-line="337" selection-start-column="45" selection-end-line="337" selection-end-column="45" />
+            <state relative-caret-position="168">
+              <caret line="174" column="24" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
               <folding>
                 <element signature="n#!!block;n#clearResearch#0" />
-                <element signature="e#385#851#0" />
-                <element signature="e#905#2326#0" />
-                <element signature="e#2383#2727#0" />
-                <element signature="e#2805#2849#0" />
-                <element signature="e#2947#3029#0" />
-                <element signature="e#3112#3194#0" />
-                <element signature="e#3282#3326#0" />
-                <element signature="e#3405#4317#0" />
-                <element signature="e#4413#4475#0" />
                 <element signature="n#!!block;n#refreshResearchView#0" />
-                <element signature="n#!!block;n#setKeywords#0" />
                 <element signature="n#!!block;n#setReferences#0" />
                 <element signature="n#!!block;n#setAuthor#0" />
+                <element signature="n#!!block;n#setPublicationYear#0" />
+                <element signature="n#!!block;n#setTaxonomy#0" />
                 <element signature="n#!!block;n#bib2research#0" />
                 <element signature="n#!!block;n#saveResearch#0" />
                 <element signature="n#!!block;n#getResearchFromPDF#0" />
@@ -141,26 +98,10 @@
         <option value="$PROJECT_DIR$/Css/index.css" />
         <option value="$PROJECT_DIR$/Js/tabs.js" />
         <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/Js/viz.js" />
+        <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER">
-    <package-json value="$PROJECT_DIR$/package.json" />
-  </component>
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
-  <component name="NodeModulesDirectoryManager">
-    <handled-path value="$PROJECT_DIR$/node_modules" />
-  </component>
-  <component name="NodePackageJsonFileManager">
-    <packageJsonPaths>
-      <path value="$PROJECT_DIR$/package.json" />
-    </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="1360" />
@@ -172,6 +113,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -188,7 +130,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -245,17 +186,18 @@
       <workItem from="1559575314144" duration="906000" />
       <workItem from="1559578428117" duration="5387000" />
       <workItem from="1559612185601" duration="6676000" />
+      <workItem from="1559654423030" duration="3995000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="125933000" />
+    <option name="totallyTimeSpent" value="129928000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1376" height="744" extended-state="6" />
+    <frame x="0" y="23" width="1280" height="704" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25112107" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25099286" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -278,9 +220,6 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/node_modules/xmltojson/lib/xmlToJSON.js">
@@ -331,9 +270,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Js/Viz/keyword.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Js/Viz/keyword.js" />
     <entry file="file://$PROJECT_DIR$/Js/tabs.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="612">
@@ -343,7 +280,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
+        <state relative-caret-position="708">
           <caret line="131" column="48" selection-start-line="131" selection-start-column="37" selection-end-line="131" selection-end-column="48" />
           <folding>
             <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
@@ -354,45 +291,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Js/viz.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6">
+          <caret line="8" column="30" lean-forward="true" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+          <folding>
+            <element signature="n#!!block;n#keywordPreparation#0" />
+            <element signature="n#!!block;n#referencesPreparation#0" />
+            <element signature="n#!!block;n#authorPreparation#0" />
+            <element signature="n#!!block;n#publicationYearPreparation#0" />
+            <element signature="n#!!block;n#taxonomyPreparation#0" />
+            <element signature="n#!!block;n#removeSVGContent#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="337" column="45" selection-start-line="337" selection-start-column="45" selection-end-line="337" selection-end-column="45" />
+        <state relative-caret-position="168">
+          <caret line="174" column="24" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
           <folding>
             <element signature="n#!!block;n#clearResearch#0" />
-            <element signature="e#385#851#0" />
-            <element signature="e#905#2326#0" />
-            <element signature="e#2383#2727#0" />
-            <element signature="e#2805#2849#0" />
-            <element signature="e#2947#3029#0" />
-            <element signature="e#3112#3194#0" />
-            <element signature="e#3282#3326#0" />
-            <element signature="e#3405#4317#0" />
-            <element signature="e#4413#4475#0" />
             <element signature="n#!!block;n#refreshResearchView#0" />
-            <element signature="n#!!block;n#setKeywords#0" />
             <element signature="n#!!block;n#setReferences#0" />
             <element signature="n#!!block;n#setAuthor#0" />
+            <element signature="n#!!block;n#setPublicationYear#0" />
+            <element signature="n#!!block;n#setTaxonomy#0" />
             <element signature="n#!!block;n#bib2research#0" />
             <element signature="n#!!block;n#saveResearch#0" />
             <element signature="n#!!block;n#getResearchFromPDF#0" />
             <element signature="n#!!block;n#newResearchFormSetup#0" />
             <element signature="n#!!block;n#getDataFromForm#0" />
             <element signature="n#!!block;n#isEmptyInput#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Js/viz.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="73" column="24" selection-start-line="73" selection-start-column="24" selection-end-line="73" selection-end-column="24" />
-          <folding>
-            <element signature="n#!!block;n#keywordPreparation#0" />
-            <element signature="n#!!block;n#keywordPreparation#1" />
-            <element signature="n#!!block;n#keywordPreparation#4" />
-            <element signature="n#!!block;n#networkGraphDrawing#0" />
-            <element signature="n#!!block;n#removeSVGContent#0" />
           </folding>
         </state>
       </provider>
