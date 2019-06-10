@@ -84,8 +84,8 @@ document.getElementById('bibtexFile').onchange = () => {
     reader.onload = function(){
         const res = reader.result;
 
-        const obj = BibtexParser(res);
-        bib2research(obj.entries)
+        research.arcticles = research.arcticles
+                                .concat(getDataFromBibtex(BibtexParser(res)))
         research.hasResearch = true;
         setKeywords();
     };
@@ -138,6 +138,7 @@ document.getElementById('discartResearch').addEventListener('click', () => {
 })
 
 //--------------------------------------CENTER SIDE----------------------------------------
+
 //JSON research visualization
 function refreshResearchView() {
     const content = document.getElementById('researchConfigContent');
@@ -184,7 +185,14 @@ function setKeywords() {
                 <h1 class="session-title">Keywords:</h1>
                 <ul>
                     ${htmlKW}
-                </ul> 
+                </ul>
+                
+                <br>
+                
+                <h1>Insert References:</h1>
+                <ul>
+                    ${getReferenceInput(d.id)}
+                </ul>
             </div>
             `
     }
@@ -228,7 +236,14 @@ function setReferences() {
                 <h1 class="session-title">Keywords:</h1>
                 <ul>
                     ${htmlKW}
-                </ul> 
+                </ul>
+                
+                <br>
+                
+                <h1>Insert References:</h1>
+                <ul>
+                    ${getReferenceInput(d.id)}
+                </ul>
             </div>
             `
     }
@@ -321,6 +336,13 @@ function setPublicationYear() {
                 <h1 class="session-title">Publication Year:</h1>
                 <h3>${arcticle.publicationYear}</h3>
                 
+                <br>
+                
+                <h1>Insert References:</h1>
+                <ul>
+                    ${getReferenceInput(d.id)}
+                </ul>
+                
             </div>
             `
     }
@@ -391,17 +413,20 @@ function setTaxonomy() {
 
 //---------------------------------------FUNCTION------------------------------------------
 
-function bib2research(bib) {
-    for(let arcticle of bib) {
+function getDataFromBibtex(bib) {
+    let objs = []
+    for(let arcticle of bib.entries) {
         const f = arcticle.Fields
-        research.arcticles.push({
-            "author": f.author,
-            "doi": f.doi,
-            "keywords": f.keywords.split(', '),
-            "title": f.title,
-            "publicationYear": f.year,
+        objs.push({
+            "author": f.author ? f.author : "",
+            "doi": f.doi ? f.doi : "",
+            "keywords": f.keywords ? f.keywords.split(', ') : "",
+            "title": f.title ? f.title : "",
+            "publicationYear": f.year ? f.year : "",
+            "references": []
         })
     }
+    return objs
 }
 
 function saveResearch() {
@@ -461,4 +486,27 @@ function isEmptyInput(ids) {
         if(document.getElementById(id).value === '') return id;
     }
     return false;
+}
+
+function getReferenceInput(index) {
+    return `<input type="text" id="setReferencesInput" placeholder="doi1,doi2,doi3..."/>
+            <br><button onclick="getBibtexFromDOI(${index})">Set References</button>`
+}
+
+function getBibtexFromDOI(ind) {
+    let input = document.getElementById(`setReferencesInput`).value.split(',')
+    for (let doi of input) {
+        fetch(`http://dx.doi.org/${doi}`, {
+            method: 'GET',
+            headers:{
+                'Accept': 'application/x-bibtex; charset=utf-8'
+            }
+        }).then(res => res.text())
+            .then(response => {
+                research.arcticles[ind]
+                    .references = research.arcticles[ind]
+                                    .references.concat(getDataFromBibtex((BibtexParser(response))))
+            })
+            .catch(error => console.error('Error:', error) /*Alertar o usuario*/);
+    }
 }

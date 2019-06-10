@@ -177,7 +177,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
         .selectAll("line")
         .data(links)
         .join("line")
-        .attr("stroke", d => {console.log(d.strokeColor); return d.strokeColor})
+        .attr("stroke", d => {return d.strokeColor})
         .attr("stroke-width", 5)
         .attr("stroke-opacity", 1)
         .on('click',d => linkFunction(d));
