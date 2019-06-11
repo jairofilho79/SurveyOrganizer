@@ -11,11 +11,23 @@ function clearResearch() {
 }
 clearResearch();
 refreshResearchView();
+setHeightWidth();
 
 //Refresh App
 function refreshApp() {
     refreshResearchView()
     removeSVGContent()
+}
+
+function setHeightWidth() {
+    document.getElementById('app').style.height = "100vh"
+    document.getElementById('rightBar').style.height =
+        String(window.innerHeight - document.getElementById('labvis').offsetHeight) + "px"
+    document.getElementById('rightBar').style.overflowY = "auto"
+    // document.getElementById('contentCenterBar').style.height =
+    //     String(window.innerHeight - document.getElementById('centerTabs').offsetHeight) + "px"
+    document.getElementById('contentCenterBar').style.overflowY = "auto"
+
 }
 
 //--------------------------------------LEFT SIDE-----------------------------------------
@@ -350,11 +362,11 @@ function setTaxonomy() {
 //--------------------------------------RIGHT SIDE-----------------------------------------
 
 function prepViewArcticle(ind) {
-    viewArcticle(research.arcticles[ind])
+    viewArcticle(research.arcticles[ind],[ind])
 }
 
-function viewArcticle(arcticle) {
+function viewArcticle(arcticle,path) {
     const rightBar = document.getElementById('rightBar')
     rightBar.innerHTML = ''
-    rightBar.appendChild(getHTMLArcticle(arcticle))
+    rightBar.appendChild(getHTMLArcticle(arcticle,path))
 }

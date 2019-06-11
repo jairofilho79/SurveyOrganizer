@@ -74,12 +74,13 @@ function isEmptyInput(ids) {
     return false;
 }
 
-function getReferenceInput(ref) {
-    console.log(ref);
+function getReferenceInput(path) {
+    let ref = getObjFromPath(path)
     let referencesUl = document.createElement('ul')
-    for(let r of ref) {
+    for(let r in ref) {
         const li = document.createElement('li')
-        li.addEventListener('click',() => {viewArcticle(r)})
+        const pat = [...path].push(+r)
+        li.addEventListener('click',() => {viewArcticle(r,pat)})
         li.innerHTML = `<a href="#">${r.title}</a>`
         referencesUl.appendChild(li)
     }
@@ -92,7 +93,7 @@ function getReferenceInput(ref) {
     let button = document.createElement('button')
     button.innerText = 'Set References'
     // button.setAttribute('id','setReferencesButton')
-    button.addEventListener('click', () => {ref = ref.concat(getBibtexFromDOI(ref))})
+    button.addEventListener('click', () => {getBibtexFromDOI(path)})
 
     let refInput = document.createElement('div')
     refInput.appendChild(referencesUl)
@@ -103,8 +104,21 @@ function getReferenceInput(ref) {
     return refInput
 }
 
-function getBibtexFromDOI(ref) {
+function getObjFromPath(path) {
+    console.log(path);
+    let ref = research.arcticles[path[0]];
+    for (let p = 1; p < path.length; path++) {
+        console.log(123);
+        ref = ref.references[path[p]]
+    }
+    ref = ref.references ? ref.references : ref;
+    return ref;
+}
+
+function getBibtexFromDOI(path) {
+
     let input = document.getElementById(`setReferencesInput`).value.split(',')
+    let ref = getObjFromPath(path);
     for (let doi of input) {
         fetch(`http://dx.doi.org/${doi}`, {
             method: 'GET',
@@ -113,13 +127,15 @@ function getBibtexFromDOI(ref) {
             }
         }).then(res => res.text())
             .then(response => {
+                console.log(response)
+                console.log(getDataFromBibtex( BibtexParser( response )))
                 ref = ref.concat( getDataFromBibtex( BibtexParser( response ) ) )
             })
             .catch(error => console.error('Error:', error) /*Alertar o usuario*/);
     }
 }
 
-function getHTMLArcticle(arcticle) {
+function getHTMLArcticle(arcticle,path) {
 
     let htmlKW = "";
     for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
@@ -163,7 +179,7 @@ function getHTMLArcticle(arcticle) {
         `
 
     let refUl = document.createElement('ul')
-    refUl.appendChild(getReferenceInput(arcticle.references))
+    refUl.appendChild(getReferenceInput(path))
     html.appendChild(refUl)
 
     return html

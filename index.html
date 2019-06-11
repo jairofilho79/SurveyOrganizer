@@ -4,6 +4,7 @@
         <link rel="stylesheet" href="Library/bulma.min.css">
         <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="Css/index.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="http://d3js.org/d3-selection-multi.v1.js"></script>
         <style type="text/css">
@@ -12,7 +13,7 @@
         </style>
     </head>
     <body>
-        <div class="columns">
+        <div id="app" class="columns">
             <!--Left Side-->
             <div class="column">
                 <div id="surveyOrganizer" class="box has-text-centered is-shadowless">Survey Organizer</div>
@@ -77,61 +78,58 @@
             </div>
             <!--Center Side-->
             <div class="column is-flex is-half">
-                <div class="column">
-                    <div class="tabs is-centered">
+                <div id="centerBar" class="column">
+                    <div id="centerTabs" class="tabs is-centered">
                         <ul>
                             <li id="researchConfigTab" class="is-active"><a>Research Components</a></li>
                             <li id="vizTab"><a>Visualizations</a></li>
                             <li id="newResearchTab"><a>New Research</a></li>
                         </ul>
                     </div>
+                    <div id="contentCenterBar">
+                        <div id="researchConfigContent"></div>
 
-                    <div id="researchConfigContent"></div>
+                        <div id="vizContent">
 
-                    <div id="vizContent">
+                            <div class="tabs is-centered">
+                                <ul>
+                                    <li id="keywordTab"><a>Keywords</a></li>
+                                    <li id="referencesTab"><a>References</a></li>
+                                    <li id="authorTab"><a>Author</a></li>
+                                    <li id="publicationYearTab"><a>Publication Year</a></li>
+                                    <li id="taxonomyTab"><a>Taxonomy</a></li>
+                                </ul>
+                            </div>
 
-                        <div class="tabs is-centered">
-                            <ul>
-                                <li id="keywordTab"><a>Keywords</a></li>
-                                <li id="referencesTab"><a>References</a></li>
-                                <li id="authorTab"><a>Author</a></li>
-                                <li id="publicationYearTab"><a>Publication Year</a></li>
-                                <li id="taxonomyTab"><a>Taxonomy</a></li>
-                            </ul>
+
+                            <div id="keywordContent">
+                                <svg id="keywordSVG" width="600" height="500"></svg>
+                            </div>
+                            <div id="referencesContent">
+                                <svg id="referencesSVG" width="600" height="500"></svg>
+                            </div>
+                            <div id="authorContent">
+                                <svg id="authorSVG" width="600" height="500"></svg>
+                            </div>
+                            <div id="publicationYearContent">
+                                <svg id="publicationYearSVG" width="600" height="500"></svg>
+                            </div>
+                            <div id="taxonomyContent">
+                                <svg id="taxonomySVG" width="600" height="500"></svg>
+                            </div>
+
                         </div>
 
-
-                        <div id="keywordContent">
-                            <svg id="keywordSVG" width="600" height="500"></svg>
+                        <div id="newResearchContent">
+                            <input id="newResearchTitle" class="input" type="text" placeholder="Insert the research title.">
+                            <input id="newResearchFullname" class="input" type="text" placeholder="Insert your fullname.">
+                            <input id="newResearchEmail" class="input" type="email" placeholder="Insert your email.">
+                            <input id="newResearchOrganization" class="input" type="text" placeholder="Insert your organization.">
+                            <textarea id="newResearchMotivation" class="textarea" placeholder="Insert your research motivation."></textarea>
+                            <br>
+                            <button id="createNewResearch" class="button is-primary">Create Research</button>
                         </div>
-                        <div id="referencesContent">
-                            <svg id="referencesSVG" width="600" height="500"></svg>
-                        </div>
-                        <div id="authorContent">
-                            <svg id="authorSVG" width="600" height="500"></svg>
-                        </div>
-                        <div id="publicationYearContent">
-                            <svg id="publicationYearSVG" width="600" height="500"></svg>
-                        </div>
-                        <div id="taxonomyContent">
-                            <svg id="taxonomySVG" width="600" height="500"></svg>
-                        </div>
-
                     </div>
-
-
-
-                    <div id="newResearchContent">
-                        <input id="newResearchTitle" class="input" type="text" placeholder="Insert the research title.">
-                        <input id="newResearchFullname" class="input" type="text" placeholder="Insert your fullname.">
-                        <input id="newResearchEmail" class="input" type="email" placeholder="Insert your email.">
-                        <input id="newResearchOrganization" class="input" type="text" placeholder="Insert your organization.">
-                        <textarea id="newResearchMotivation" class="textarea" placeholder="Insert your research motivation."></textarea>
-                        <br>
-                        <button id="createNewResearch" class="button is-primary">Create Research</button>
-                    </div>
-
-
                 </div>
             </div>
             <!--Right Side-->

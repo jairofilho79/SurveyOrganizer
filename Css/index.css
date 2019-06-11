@@ -6,11 +6,6 @@
     display:none
 }
 
-#rightBar {
-    height: 400px;
-    overflow-y: auto;
-}
-
 .inputfile {
     width: 0.1px;
     height: 0.1px;
