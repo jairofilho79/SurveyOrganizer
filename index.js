@@ -37,46 +37,6 @@ document.getElementById('openResearchFile').onchange = () => {
     reader.readAsText(file);
 }
 
-document.getElementById('pdfFile').onchange = () => {
-    document.getElementById('pdfLoadingIcon').style.display = 'block'
-    if(Object.keys(research).length === 0) {
-        newResearchFormSetup('none','block')
-    }
-    const xhr = new XMLHttpRequest();
-
-    let files = [...document.getElementById('pdfFile').files];
-
-    let numCurrPDF = 0;
-    let foldername = ""
-    sendPDFFile();
-    function sendPDFFile() {
-        const form = new FormData();
-        xhr.open("POST", `${backendURI}/setPDF--${files[numCurrPDF].name.substring(0,files[numCurrPDF].name.lastIndexOf('.'))}__${foldername}` , true);
-
-        //Send the proper header information along with the request
-        xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-        xhr.onreadystatechange = function() { // Call a function when the state changes.
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-
-                if(numCurrPDF === files.length-1) {
-                    console.log('terminaram os envios!');
-                    getResearchFromPDF(xhr.responseText)
-                    //Chamar função para concatenar pesquisas.
-                } else {
-                    console.log(`Foi processado um pdf!`);
-                    foldername = xhr.responseText;
-                    numCurrPDF++;
-                    sendPDFFile()
-                }
-            }
-        }
-        form.append('file',files[numCurrPDF]);
-        xhr.send(form);
-    }
-
-}
-
 document.getElementById('bibtexFile').onchange = () => {
     const reader = new FileReader();
     const file = document.getElementById('bibtexFile').files[0];
@@ -145,7 +105,7 @@ function refreshResearchView() {
     if(research.hasResearch) {
         let liArcticles = ``;
         for (let a in research.arcticles) {
-            liArcticles += `<li id="arcticle--${+a}">${research.arcticles[a].title}</li>    `
+            liArcticles += `<li onclick="prepViewArcticle(${+a})" id="arcticle--${+a}"><a href="#arcticle--${+a}">${research.arcticles[a].title}</a></li>`
         }
         content.innerHTML =
             `
@@ -178,20 +138,13 @@ function setKeywords() {
         rightBar.innerHTML =
             `<div>
                 <h1 class="session-title">Title:</h1>  
-                <h3>${arcticle.title}</h3>
+                <h3 onclick="prepViewArcticle(${+d.id})"><a href="#">${arcticle.title}</a></h3>
                 
                 <br>
             
                 <h1 class="session-title">Keywords:</h1>
                 <ul>
                     ${htmlKW}
-                </ul>
-                
-                <br>
-                
-                <h1>Insert References:</h1>
-                <ul>
-                    ${getReferenceInput(d.id)}
                 </ul>
             </div>
             `
@@ -229,20 +182,13 @@ function setReferences() {
         rightBar.innerHTML =
             `<div>
                 <h1 class="session-title">Title:</h1>  
-                <h3>${arcticle.title}</h3>
+                <h3 onclick="prepViewArcticle(${+d.id})"><a href="#">${arcticle.title}</a></h3>
                 
                 <br>
             
                 <h1 class="session-title">Keywords:</h1>
                 <ul>
                     ${htmlKW}
-                </ul>
-                
-                <br>
-                
-                <h1>Insert References:</h1>
-                <ul>
-                    ${getReferenceInput(d.id)}
                 </ul>
             </div>
             `
@@ -275,18 +221,18 @@ function setAuthor() {
     const nodeFunc = (d) => {
         const arcticle = research.arcticles[d.id]
         const rightBar = document.getElementById('rightBar')
-        let htmlKW = "";
-        for (let kw of arcticle.author.split(' and ')) {htmlKW += `<li>${kw}</li>`}
+        let htmlAuthor = "";
+        for (let aut of arcticle.author.split(' and ')) {htmlAuthor += `<li>${aut}</li>`}
         rightBar.innerHTML =
             `<div>
                 <h1 class="session-title">Title:</h1>  
-                <h3>${arcticle.title}</h3>
+                <h3 onclick="prepViewArcticle(${+d.id})"><a href="#">${arcticle.title}</a></h3>
                 
                 <br>
             
                 <h1 class="session-title">Author(s):</h1>
                 <ul>
-                    ${htmlKW}
+                    ${htmlAuthor}
                 </ul> 
             </div>
             `
@@ -335,14 +281,6 @@ function setPublicationYear() {
             
                 <h1 class="session-title">Publication Year:</h1>
                 <h3>${arcticle.publicationYear}</h3>
-                
-                <br>
-                
-                <h1>Insert References:</h1>
-                <ul>
-                    ${getReferenceInput(d.id)}
-                </ul>
-                
             </div>
             `
     }
@@ -411,102 +349,12 @@ function setTaxonomy() {
 
 //--------------------------------------RIGHT SIDE-----------------------------------------
 
-//---------------------------------------FUNCTION------------------------------------------
-
-function getDataFromBibtex(bib) {
-    let objs = []
-    for(let arcticle of bib.entries) {
-        const f = arcticle.Fields
-        objs.push({
-            "author": f.author ? f.author : "",
-            "doi": f.doi ? f.doi : "",
-            "keywords": f.keywords ? f.keywords.split(', ') : "",
-            "title": f.title ? f.title : "",
-            "publicationYear": f.year ? f.year : "",
-            "references": []
-        })
-    }
-    return objs
+function prepViewArcticle(ind) {
+    viewArcticle(research.arcticles[ind])
 }
 
-function saveResearch() {
-    let element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(research)));
-    element.setAttribute('download', 'myResearch.json');
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-}
-
-function getResearchFromPDF(folder) {
-    fetch(`${backendURI}/getResearchJSON/?folder=${folder}`)
-        // .then(response => response.json())
-        .then(response => response.text())
-        .then(res => {
-            if(!research.hasOwnProperty('arcticles')) research.arcticles = []
-            research.arcticles = research.arcticles.concat(JSON.parse(res));
-            console.log(res);
-            document.getElementById('pdfLoadingIcon').style.display = 'none'
-        })
-        .catch(e => {
-            console.log(e);
-            document.getElementById('pdfLoadingIcon').style.display = 'none'
-        })
-}
-
-function newResearchFormSetup(displayCurrent,displayNewResearch) {
-    document.getElementById('referencesTab').style.display = displayCurrent;
-    document.getElementById('referencesContent').style.display = 'none';
-    document.getElementById('keywordTab').style.display = displayCurrent;
-    document.getElementById('keywordContent').style.display = 'none';
-    document.getElementById('researchConfigTab').style.display = displayCurrent;
-    document.getElementById('researchConfigContent').style.display = 'none';
-    document.getElementById(ActiveTab+'Content').style.display = displayCurrent;
-
-    document.getElementById('newResearchTab').style.display = displayNewResearch;
-    document.getElementById('newResearchTab').classList.toggle('is-active');
-    document.getElementById('newResearchContent').style.display = displayNewResearch;
-}
-
-function getDataFromForm(ids) {
-    let data = {}
-    for (let id of ids) {
-        data[id] = document.getElementById(id).value
-        document.getElementById(id).value = ''
-    }
-    return data
-}
-
-function isEmptyInput(ids) {
-    for (let id of ids) {
-        if(document.getElementById(id).value === '') return id;
-    }
-    return false;
-}
-
-function getReferenceInput(index) {
-    return `<input type="text" id="setReferencesInput" placeholder="doi1,doi2,doi3..."/>
-            <br><button onclick="getBibtexFromDOI(${index})">Set References</button>`
-}
-
-function getBibtexFromDOI(ind) {
-    let input = document.getElementById(`setReferencesInput`).value.split(',')
-    for (let doi of input) {
-        fetch(`http://dx.doi.org/${doi}`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/x-bibtex; charset=utf-8'
-            }
-        }).then(res => res.text())
-            .then(response => {
-                research.arcticles[ind]
-                    .references = research.arcticles[ind]
-                                    .references.concat(getDataFromBibtex((BibtexParser(response))))
-            })
-            .catch(error => console.error('Error:', error) /*Alertar o usuario*/);
-    }
+function viewArcticle(arcticle) {
+    const rightBar = document.getElementById('rightBar')
+    rightBar.innerHTML = ''
+    rightBar.appendChild(getHTMLArcticle(arcticle))
 }

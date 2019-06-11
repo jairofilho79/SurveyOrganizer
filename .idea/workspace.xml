@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4661ba65-7a00-458c-be8f-5850651a2f46" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Js/viz.js" beforeDir="false" afterPath="$PROJECT_DIR$/Js/viz.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Js/functions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Css/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/Css/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grobidServer.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -17,50 +22,35 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/index.html">
+        <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="708">
-              <caret line="131" column="48" selection-start-line="131" selection-start-column="37" selection-end-line="131" selection-end-column="48" />
+            <state relative-caret-position="428">
+              <caret line="357" column="26" selection-start-line="357" selection-start-column="26" selection-end-line="357" selection-end-column="26" />
               <folding>
-                <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
-                <element signature="n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
-                <element signature="n#style#0;n#i#0;n#button#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#div#2;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Js/viz.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6">
-              <caret line="8" column="30" lean-forward="true" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
-              <folding>
-                <element signature="n#!!block;n#keywordPreparation#0" />
-                <element signature="n#!!block;n#referencesPreparation#0" />
-                <element signature="n#!!block;n#authorPreparation#0" />
-                <element signature="n#!!block;n#publicationYearPreparation#0" />
-                <element signature="n#!!block;n#taxonomyPreparation#0" />
-                <element signature="n#!!block;n#removeSVGContent#0" />
+                <element signature="n#!!block;n#clearResearch#0" />
+                <element signature="n#!!block;n#refreshApp#0" />
+                <element signature="e#474#940#0" />
+                <element signature="e#2472#2816#0" />
+                <element signature="e#2894#2938#0" />
+                <element signature="e#3493#4405#0" />
+                <element signature="e#4502#4564#0" />
+                <element signature="n#!!block;n#refreshResearchView#0" />
+                <element signature="n#!!block;n#setKeywords#0" />
+                <element signature="n#!!block;n#setReferences#0" />
+                <element signature="n#!!block;n#setAuthor#0" />
+                <element signature="n#!!block;n#setPublicationYear#0" />
+                <element signature="n#!!block;n#setTaxonomy#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/index.js">
+        <entry file="file://$PROJECT_DIR$/Js/functions.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="174" column="24" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
+            <state relative-caret-position="392">
+              <caret line="115" column="34" selection-start-line="115" selection-start-column="34" selection-end-line="115" selection-end-column="34" />
               <folding>
-                <element signature="n#!!block;n#clearResearch#0" />
-                <element signature="n#!!block;n#refreshResearchView#0" />
-                <element signature="n#!!block;n#setReferences#0" />
-                <element signature="n#!!block;n#setAuthor#0" />
-                <element signature="n#!!block;n#setPublicationYear#0" />
-                <element signature="n#!!block;n#setTaxonomy#0" />
-                <element signature="n#!!block;n#bib2research#0" />
                 <element signature="n#!!block;n#saveResearch#0" />
                 <element signature="n#!!block;n#getResearchFromPDF#0" />
                 <element signature="n#!!block;n#newResearchFormSetup#0" />
@@ -81,6 +71,14 @@
       <find>read</find>
       <find>research = {}</find>
       <find>svg</find>
+      <find>session</find>
+      <find>kw</find>
+      <find>right</find>
+      <find>research Ti</find>
+      <find>class=&quot;clickable&quot;</find>
+      <find>li</find>
+      <find>&lt;a</find>
+      <find>viewArcticle(</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -95,11 +93,12 @@
         <option value="$PROJECT_DIR$/grobidServer.js" />
         <option value="$PROJECT_DIR$/graph.json" />
         <option value="$PROJECT_DIR$/main.js" />
-        <option value="$PROJECT_DIR$/Css/index.css" />
         <option value="$PROJECT_DIR$/Js/tabs.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/Js/viz.js" />
+        <option value="$PROJECT_DIR$/Css/index.css" />
+        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/index.js" />
+        <option value="$PROJECT_DIR$/Js/functions.js" />
       </list>
     </option>
   </component>
@@ -113,7 +112,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -124,12 +122,18 @@
             <path>
               <item name="SurveyOrganizer" type="b2602c69:ProjectViewProjectNode" />
               <item name="SurveyOrganizer" type="462c0819:PsiDirectoryNode" />
+              <item name="Css" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SurveyOrganizer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SurveyOrganizer" type="462c0819:PsiDirectoryNode" />
               <item name="Js" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -191,7 +195,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="129928000" />
+    <option name="totallyTimeSpent" value="141148000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="704" extended-state="6" />
@@ -263,13 +267,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Css/index.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="66" selection-start-line="4" selection-start-column="66" selection-end-line="4" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Js/Viz/keyword.js" />
     <entry file="file://$PROJECT_DIR$/Js/tabs.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -278,23 +275,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/Css/index.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="708">
-          <caret line="131" column="48" selection-start-line="131" selection-start-column="37" selection-end-line="131" selection-end-column="48" />
-          <folding>
-            <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#style#0;n#i#0;n#button#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#div#2;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
-          </folding>
+        <state relative-caret-position="120">
+          <caret line="8" column="9" lean-forward="true" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Js/viz.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6">
-          <caret line="8" column="30" lean-forward="true" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+        <state relative-caret-position="-22">
+          <caret line="179" column="30" selection-start-line="179" selection-start-column="30" selection-end-line="179" selection-end-column="30" />
           <folding>
             <element signature="n#!!block;n#keywordPreparation#0" />
             <element signature="n#!!block;n#referencesPreparation#0" />
@@ -306,18 +297,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="446">
+          <caret line="149" column="26" selection-start-line="149" selection-start-column="26" selection-end-line="149" selection-end-column="26" />
+          <folding>
+            <element signature="n#div#2;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="174" column="24" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
+        <state relative-caret-position="428">
+          <caret line="357" column="26" selection-start-line="357" selection-start-column="26" selection-end-line="357" selection-end-column="26" />
           <folding>
             <element signature="n#!!block;n#clearResearch#0" />
+            <element signature="n#!!block;n#refreshApp#0" />
+            <element signature="e#474#940#0" />
+            <element signature="e#2472#2816#0" />
+            <element signature="e#2894#2938#0" />
+            <element signature="e#3493#4405#0" />
+            <element signature="e#4502#4564#0" />
             <element signature="n#!!block;n#refreshResearchView#0" />
+            <element signature="n#!!block;n#setKeywords#0" />
             <element signature="n#!!block;n#setReferences#0" />
             <element signature="n#!!block;n#setAuthor#0" />
             <element signature="n#!!block;n#setPublicationYear#0" />
             <element signature="n#!!block;n#setTaxonomy#0" />
-            <element signature="n#!!block;n#bib2research#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Js/functions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="115" column="34" selection-start-line="115" selection-start-column="34" selection-end-line="115" selection-end-column="34" />
+          <folding>
             <element signature="n#!!block;n#saveResearch#0" />
             <element signature="n#!!block;n#getResearchFromPDF#0" />
             <element signature="n#!!block;n#newResearchFormSetup#0" />

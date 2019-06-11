@@ -6,7 +6,7 @@
     display:none
 }
 
-#rightBar, #leftBar {
+#rightBar {
     height: 400px;
     overflow-y: auto;
 }
