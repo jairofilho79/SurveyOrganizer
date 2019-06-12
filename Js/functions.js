@@ -1,16 +1,16 @@
 
 function getDataFromBibtex(bib) {
-    let objs = []
+    let objs = {}
     for(let arcticle of bib.entries) {
         const f = arcticle.Fields
-        objs.push({
+        objs[f.doi] = {
             "author": f.author ? f.author : "",
             "doi": f.doi ? f.doi : "",
             "keywords": f.keywords ? f.keywords.split(', ') : "",
             "title": f.title ? f.title : "",
             "publicationYear": f.year ? f.year : "",
             "references": []
-        })
+        }
     }
     return objs
 }
@@ -26,22 +26,6 @@ function saveResearch() {
     element.click();
 
     document.body.removeChild(element);
-}
-
-function getResearchFromPDF(folder) {
-    fetch(`${backendURI}/getResearchJSON/?folder=${folder}`)
-    // .then(response => response.json())
-        .then(response => response.text())
-        .then(res => {
-            if(!research.hasOwnProperty('arcticles')) research.arcticles = []
-            research.arcticles = research.arcticles.concat(JSON.parse(res));
-            console.log(res);
-            document.getElementById('pdfLoadingIcon').style.display = 'none'
-        })
-        .catch(e => {
-            console.log(e);
-            document.getElementById('pdfLoadingIcon').style.display = 'none'
-        })
 }
 
 function newResearchFormSetup(displayCurrent,displayNewResearch) {
@@ -74,14 +58,15 @@ function isEmptyInput(ids) {
     return false;
 }
 
-function getReferenceInput(path) {
-    let ref = getObjFromPath(path)
+
+
+function getReferenceInput(arcticleDoi) {
     let referencesUl = document.createElement('ul')
-    for(let r in ref) {
+    for(let doi of research.arcticles[arcticleDoi].references) {
         const li = document.createElement('li')
-        const pat = [...path].push(+r)
-        li.addEventListener('click',() => {viewArcticle(r,pat)})
-        li.innerHTML = `<a href="#">${r.title}</a>`
+        const arcticle = research.arcticles[doi];
+        li.addEventListener('click',() => {viewArcticle(doi)})
+        li.innerHTML = `<a href="#">${arcticle.title}</a>`
         referencesUl.appendChild(li)
     }
 
@@ -92,8 +77,7 @@ function getReferenceInput(path) {
 
     let button = document.createElement('button')
     button.innerText = 'Set References'
-    // button.setAttribute('id','setReferencesButton')
-    button.addEventListener('click', () => {getBibtexFromDOI(path)})
+    button.addEventListener('click', () => {getBibtexFromDOI(arcticleDoi)})
 
     let refInput = document.createElement('div')
     refInput.appendChild(referencesUl)
@@ -104,21 +88,9 @@ function getReferenceInput(path) {
     return refInput
 }
 
-function getObjFromPath(path) {
-    console.log(path);
-    let ref = research.arcticles[path[0]];
-    for (let p = 1; p < path.length; path++) {
-        console.log(123);
-        ref = ref.references[path[p]]
-    }
-    ref = ref.references ? ref.references : ref;
-    return ref;
-}
-
-function getBibtexFromDOI(path) {
+function getBibtexFromDOI(arcticleDoi) {
 
     let input = document.getElementById(`setReferencesInput`).value.split(',')
-    let ref = getObjFromPath(path);
     for (let doi of input) {
         fetch(`http://dx.doi.org/${doi}`, {
             method: 'GET',
@@ -127,21 +99,26 @@ function getBibtexFromDOI(path) {
             }
         }).then(res => res.text())
             .then(response => {
-                console.log(response)
-                console.log(getDataFromBibtex( BibtexParser( response )))
-                ref = ref.concat( getDataFromBibtex( BibtexParser( response ) ) )
+                const arcticles = getDataFromBibtex( BibtexParser( response ) )
+                console.log(Object.keys(arcticles))
+                research.arcticles[arcticleDoi].references =
+                    research.arcticles[arcticleDoi].references.concat(Object.keys(arcticles))
+                research.arcticles = Object.assign(research.arcticles, arcticles);
             })
             .catch(error => console.error('Error:', error) /*Alertar o usuario*/);
     }
 }
 
-function getHTMLArcticle(arcticle,path) {
+function getHTMLArcticle(arcticleDoi) {
+
+    console.log(arcticleDoi);
+    const arcticle = research.arcticles[arcticleDoi];
 
     let htmlKW = "";
-    for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
+    if(arcticle.keywords) for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
 
     let htmlAuthor = "";
-    for (let aut of arcticle.author.split(' and ')) {htmlAuthor += `<li>${aut}</li>`}
+    if(arcticle.author) for (let aut of arcticle.author.split(' and ')) {htmlAuthor += `<li>${aut}</li>`}
 
     let html = document.createElement('div')
     html.innerHTML =
@@ -179,7 +156,7 @@ function getHTMLArcticle(arcticle,path) {
         `
 
     let refUl = document.createElement('ul')
-    refUl.appendChild(getReferenceInput(path))
+    refUl.appendChild(getReferenceInput(arcticleDoi))
     html.appendChild(refUl)
 
     return html

@@ -5,8 +5,9 @@ const backendURI = 'http://127.0.0.1:8080'
 function clearResearch() {
     research = {
         "author": "",
-        "arcticles": [],
-        "hasResearch": false
+        "arcticles": {},
+        "hasResearch": false,
+        "mainArcticles": []
     }
 }
 clearResearch();
@@ -19,6 +20,7 @@ function refreshApp() {
     removeSVGContent()
 }
 
+//TODO: refatorar!
 function setHeightWidth() {
     document.getElementById('app').style.height = "100vh"
     document.getElementById('rightBar').style.height =
@@ -55,11 +57,11 @@ document.getElementById('bibtexFile').onchange = () => {
 
     reader.onload = function(){
         const res = reader.result;
-
-        research.arcticles = research.arcticles
-                                .concat(getDataFromBibtex(BibtexParser(res)))
+        const arcticles = getDataFromBibtex(BibtexParser(res));
+        research.mainArcticles = research.mainArcticles.concat(Object.keys(arcticles))
+        research.arcticles = Object.assign(research.arcticles,arcticles)
         research.hasResearch = true;
-        setKeywords();
+        refreshApp();
     };
 
     reader.readAsText(file);
@@ -74,6 +76,7 @@ document.getElementById('saveResearchFile').addEventListener('click', () => {
 document.getElementById('researchDropdown').addEventListener('click',() => {
     document.getElementById('researchDropdown').classList.toggle('is-active');
 });
+
 document.getElementById('researchDropdown').addEventListener('mouseleave',() => {
     document.getElementById('researchDropdown').classList.remove('is-active');
 });
@@ -82,6 +85,7 @@ document.getElementById('researchDropdown').addEventListener('mouseleave',() => 
 document.getElementById('newResearch').addEventListener('click',() => {
     newResearchFormSetup('none','block')
 })
+
 document.getElementById('createNewResearch').addEventListener('click',() => {
     const ids = ['newResearchTitle','newResearchFullname','newResearchEmail','newResearchOrganization','newResearchMotivation'];
     const isEmpty = isEmptyInput(ids)
@@ -116,8 +120,10 @@ function refreshResearchView() {
     const content = document.getElementById('researchConfigContent');
     if(research.hasResearch) {
         let liArcticles = ``;
-        for (let a in research.arcticles) {
-            liArcticles += `<li onclick="prepViewArcticle(${+a})" id="arcticle--${+a}"><a href="#arcticle--${+a}">${research.arcticles[a].title}</a></li>`
+        let c = 0;
+        for (let a of research.mainArcticles) {
+            liArcticles += `<li onclick="prepViewArcticle(${c})" id="arcticle--${c}"><a href="#arcticle--${c}">${research.arcticles[a].title}</a></li>`
+            c++
         }
         content.innerHTML =
             `
@@ -362,11 +368,11 @@ function setTaxonomy() {
 //--------------------------------------RIGHT SIDE-----------------------------------------
 
 function prepViewArcticle(ind) {
-    viewArcticle(research.arcticles[ind],[ind])
+    viewArcticle(research.mainArcticles[ind])
 }
 
-function viewArcticle(arcticle,path) {
+function viewArcticle(doi) {
     const rightBar = document.getElementById('rightBar')
     rightBar.innerHTML = ''
-    rightBar.appendChild(getHTMLArcticle(arcticle,path))
+    rightBar.appendChild(getHTMLArcticle(doi))
 }
