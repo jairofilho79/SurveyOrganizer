@@ -91,22 +91,31 @@ function getReferenceInput(arcticleDoi) {
 function getBibtexFromDOI(arcticleDoi) {
 
     let input = document.getElementById(`setReferencesInput`).value.split(',')
+    const promises = []
     for (let doi of input) {
-        fetch(`http://dx.doi.org/${doi}`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/x-bibtex; charset=utf-8'
-            }
-        }).then(res => res.text())
-            .then(response => {
-                const arcticles = getDataFromBibtex( BibtexParser( response ) )
-                console.log(Object.keys(arcticles))
-                research.arcticles[arcticleDoi].references =
-                    research.arcticles[arcticleDoi].references.concat(Object.keys(arcticles))
-                research.arcticles = Object.assign(research.arcticles, arcticles);
+        if(research.arcticles[doi] !== undefined) continue
+        promises.push(
+            fetch(`http://dx.doi.org/${doi}`, {
+                method: 'GET',
+                headers:{
+                    'Accept': 'application/x-bibtex; charset=utf-8'
+                }
             })
-            .catch(error => console.error('Error:', error) /*Alertar o usuario*/);
+                .then(res => res.text())
+                    .then(response => {
+                        const arcticles = getDataFromBibtex( BibtexParser( response ) )
+                        console.log(Object.keys(arcticles))
+                        research.arcticles[arcticleDoi].references =
+                            research.arcticles[arcticleDoi].references.concat(Object.keys(arcticles))
+                        research.arcticles = Object.assign(research.arcticles, arcticles);
+                    })
+                    .catch(error => console.error('Error:', error) /*Alertar o usuario*/)
+        )
     }
+    Promise.all(promises)
+        .then(() => {
+            viewArcticle(arcticleDoi)
+        })
 }
 
 function getHTMLArcticle(arcticleDoi) {

@@ -12,21 +12,27 @@ function keywordPreparation() {
     let nodes = []
     let links = []
     const arcticles = research.arcticles;
-    for(let a=0; a < arcticles.length -1; a++) {
-        nodes.push({"name": arcticles[a].title, "id": a});
-        for(let art = a+1; art < arcticles.length; art++) {
-            const common = arcticles[a].keywords.filter(function(obj) { return arcticles[art].keywords.indexOf(obj) !== -1; });
-            const ind = common.length/(arcticles[a].keywords.length + arcticles[art].keywords.length-common.length);
+    const mainArticles = research.mainArcticles
+
+    for(let a=0; a < mainArticles.length -1; a++) {
+        nodes.push({"name": arcticles[mainArticles[a]].title, "id": mainArticles[a]});
+        for(let art = a+1; art < mainArticles.length; art++) {
+            const common = arcticles[mainArticles[a]].keywords.filter(function(obj) {
+                return arcticles[mainArticles[art]].keywords.indexOf(obj) !== -1;
+            });
+            const ind = common.length/
+                (arcticles[mainArticles[a]].keywords.length
+                + arcticles[mainArticles[art]].keywords.length-common.length);
             const r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
             const g = "00"
             const b = Math.round(255*ind).toString(16).toLocaleUpperCase()
             if(common.length > 0) {
-                links.push({"source": a, "target": art, "type": JSON.stringify(common),
+                links.push({"source": mainArticles[a], "target": mainArticles[art], "type": JSON.stringify(common),
                     "strokeColor": "#" + r + g + b})
             }
         }
     };
-    nodes.push({"name": arcticles[arcticles.length-1].title, "id": arcticles.length-1});
+    nodes.push({"name": arcticles[mainArticles[mainArticles.length-1]].title, "id": mainArticles[mainArticles.length-1]});
     return [nodes,links];
 }
 
@@ -165,11 +171,12 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
     const svg = d3.select(id),
         width = +svg.attr("width"),
         height = +svg.attr("height")
-
+    console.log(links);
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
             .id(d => d.id)
-            .distance(function(d) {return currentNetworkGraphLinkDistance;}).strength(0.1))
+            .distance(function(d) {return currentNetworkGraphLinkDistance;})
+            .strength(0.1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
 
