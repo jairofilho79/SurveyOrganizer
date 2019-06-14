@@ -93,7 +93,7 @@ function getBibtexFromDOI(arcticleDoi) {
     let input = document.getElementById(`setReferencesInput`).value.split(',')
     const promises = []
     for (let doi of input) {
-        if(research.arcticles[doi] !== undefined) continue
+        if(research.arcticles[doi] !== undefined) {research.arcticles[arcticleDoi].references.push(doi); continue}
         promises.push(
             fetch(`http://dx.doi.org/${doi}`, {
                 method: 'GET',
