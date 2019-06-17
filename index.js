@@ -229,7 +229,7 @@ function setReferences() {
             </div>
             `
     }
-    networkGraphDrawing("#referencesSVG",...keywordPreparation(),nodeFunc,linkFunc, true);
+    networkGraphDrawing("#referencesSVG",...referencesPreparation(),nodeFunc,linkFunc, true);
 }
 
 function setAuthor() {

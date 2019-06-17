@@ -54,16 +54,15 @@ function referencesPreparation() {
     let nodes = []
     let links = []
     const arcticles = research.arcticles;
-    for(let a=0; a < arcticles.length -1; a++) {
-        nodes.push({"name": arcticles[a].title, "id": a});
-        for(let art = a+1; art < arcticles.length; art++) {
-            const common = arcticles[a].keywords.filter(function(obj) { return arcticles[art].keywords.indexOf(obj) !== -1; });
-            if(common.length > 0) {
-                links.push({"source": a, "target": art, "type": JSON.stringify(common)})
-            }
+    const keys = Object.keys(arcticles);
+
+    for (let doi of keys) {
+        if(arcticles[doi].references.length === 0) continue;
+        nodes.push({"name": arcticles[doi].title, "id": doi});
+        for(let reference of arcticles[doi].references) {
+            links.push({"source": doi, "target": reference})
         }
-    };
-    nodes.push({"name": arcticles[arcticles.length-1].title, "id": arcticles.length-1});
+    }
     return [nodes,links];
 }
 
