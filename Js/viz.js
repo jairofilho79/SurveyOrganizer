@@ -23,9 +23,12 @@ function keywordPreparation() {
             const ind = common.length/
                 (arcticles[mainArticles[a]].keywords.length
                 + arcticles[mainArticles[art]].keywords.length-common.length);
-            const r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
+            let r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
+            r = r.length === 2 ? r : r+"0"
             const g = "00"
-            const b = Math.round(255*ind).toString(16).toLocaleUpperCase()
+            let b = Math.round(255*ind).toString(16).toLocaleUpperCase()
+            b = b.length === 2 ? b : b+"0"
+
             if(common.length > 0) {
                 links.push({"source": mainArticles[a], "target": mainArticles[art], "type": JSON.stringify(common),
                     "strokeColor": "#" + r + g + b})
@@ -140,7 +143,7 @@ function taxonomyPreparation() {
     return [nodes,links];
 }
 
-function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
+function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=false) {
     let color = d3.scaleOrdinal(d3.schemeCategory10);
 
     const drag = simulation => {
@@ -170,8 +173,9 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
 
     const svg = d3.select(id),
         width = +svg.attr("width"),
-        height = +svg.attr("height")
-    console.log(links);
+        height = +svg.attr("height");
+
+
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
             .id(d => d.id)
@@ -183,11 +187,26 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
     const link = svg.append("g")
         .selectAll("line")
         .data(links)
-        .join("line")
+        .join("polyline") //Procura o equivalente a isso (line)
         .attr("stroke", d => {return d.strokeColor})
         .attr("stroke-width", 5)
         .attr("stroke-opacity", 1)
         .on('click',d => linkFunction(d));
+
+        if(arrow) {link.attr("marker-mid","url(#arrow)");}
+    svg.append("defs")
+        .append("marker")
+        .attr("id","arrow")
+        .attr("markerUnits","strokeWidth")
+        .attr("markerWidth","3")
+        .attr("markerHeight","3")
+        .attr("viewBox","-5 -5 10 10")
+        .attr("refX","0")
+        .attr("refY","0")
+        .attr("orient","auto")
+        .append("path")
+        .attr("d","M 0,0 m -5,-5 L 5,0 L -5,5 Z")
+        .attr("fill", "black");
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
@@ -200,21 +219,22 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction) {
         .call(drag(simulation))
         .on('click',d => nodeFunction(d));
 
+
     node.append("title")
         .text(d => d.name);
 
     simulation.on("tick", () => {
-        link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+        link.attr("points", function(d) {
+            return d.source.x + "," + d.source.y + " " +
+                (d.source.x + d.target.x)/2 + "," + (d.source.y + d.target.y)/2 + " " +
+                d.target.x + "," + d.target.y; });
 
         node
             .attr("cx", d => d.x)
             .attr("cy", d => d.y);
     });
 }
+
 
 function removeSVGContent() {
     d3.select("#keywordSVG").selectAll("*").remove()
