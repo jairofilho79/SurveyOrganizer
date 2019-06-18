@@ -55,12 +55,20 @@ function referencesPreparation() {
     let links = []
     const arcticles = research.arcticles;
     const keys = Object.keys(arcticles);
+    let currentDois = [];
 
     for (let doi of keys) {
         if(arcticles[doi].references.length === 0) continue;
-        nodes.push({"name": arcticles[doi].title, "id": doi});
+        if(!currentDois.includes(doi)) {
+            nodes.push({"name": arcticles[doi].title, "id": doi});
+            currentDois.push(doi);
+        }
         for(let reference of arcticles[doi].references) {
-            links.push({"source": doi, "target": reference})
+            if(!currentDois.includes(reference)) {
+                nodes.push({"name": arcticles[reference].title, "id": reference});
+                currentDois.push(reference);
+            }
+            links.push({"source": doi, "target": reference, "strokeColor": "#FF0000"})
         }
     }
     return [nodes,links];
@@ -173,7 +181,6 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
     const svg = d3.select(id),
         width = +svg.attr("width"),
         height = +svg.attr("height");
-
 
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)

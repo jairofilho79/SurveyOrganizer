@@ -192,43 +192,8 @@ function setReferences() {
     refreshApp();
     currentVizFunction = 'setReferences';
 
-    const nodeFunc = (d) => {
-        const arcticle = research.arcticles[d.id]
-        const rightBar = document.getElementById('rightBar')
-        let htmlKW = "";
-        for (let kw of arcticle.keywords) {htmlKW += `<li>${kw}</li>`}
-        rightBar.innerHTML =
-            `<div>
-                <h1 class="session-title">Title:</h1>  
-                <h3 onclick="prepViewArcticle(${+d.id})"><a href="#">${arcticle.title}</a></h3>
-                
-                <br>
-            
-                <h1 class="session-title">Keywords:</h1>
-                <ul>
-                    ${htmlKW}
-                </ul>
-            </div>
-            `
-    }
-    const linkFunc = (d) => {
-        const rightBar = document.getElementById('rightBar')
-        let htmlKW = "";
-        for (let kw of JSON.parse(d.type)) {htmlKW += `<li>${kw}</li>`}
-        rightBar.innerHTML =
-            `<div>
-                <h1 class="session-title">Linked Nodes:</h1>  
-                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
-                
-                <br>
-            
-                <h1 class="session-title">Common Keywords:</h1>
-                <ul>
-                    ${htmlKW}
-                </ul> 
-            </div>
-            `
-    }
+    const nodeFunc = (d) => {viewArcticle(d.id)}
+    const linkFunc = () => {return undefined}
     networkGraphDrawing("#referencesSVG",...referencesPreparation(),nodeFunc,linkFunc, true);
 }
 

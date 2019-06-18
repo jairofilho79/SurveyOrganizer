@@ -59,7 +59,6 @@ function isEmptyInput(ids) {
 }
 
 
-
 function getReferenceInput(arcticleDoi) {
     let referencesUl = document.createElement('ul')
     for(let doi of research.arcticles[arcticleDoi].references) {
@@ -119,8 +118,6 @@ function getBibtexFromDOI(arcticleDoi) {
 }
 
 function getHTMLArcticle(arcticleDoi) {
-
-    console.log(arcticleDoi);
     const arcticle = research.arcticles[arcticleDoi];
 
     let htmlKW = "";
