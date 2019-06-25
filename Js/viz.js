@@ -21,17 +21,14 @@ function keywordPreparation() {
                 return arcticles[mainArticles[art]].keywords.indexOf(obj) !== -1;
             });
             const ind = common.length/
-                (arcticles[mainArticles[a]].keywords.length
-                + arcticles[mainArticles[art]].keywords.length-common.length);
-            let r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
-            r = r.length === 2 ? r : r+"0"
-            const g = "00"
-            let b = Math.round(255*ind).toString(16).toLocaleUpperCase()
-            b = b.length === 2 ? b : b+"0"
-
+                (
+                    arcticles[mainArticles[a]].keywords.length
+                    + arcticles[mainArticles[art]].keywords.length
+                    - common.length
+                );
             if(common.length > 0) {
                 links.push({"source": mainArticles[a], "target": mainArticles[art], "type": JSON.stringify(common),
-                    "strokeColor": "#" + r + g + b})
+                    "distanceValue": Math.round(currentNetworkGraphLinkDistance*(1-ind))})
             }
         }
     };
@@ -185,7 +182,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
             .id(d => d.id)
-            .distance(function(d) {return currentNetworkGraphLinkDistance;})
+            .distance(function(d) {return d.distanceValue ? d.distanceValue : currentNetworkGraphLinkDistance;})
             .strength(0.1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
@@ -194,7 +191,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
         .selectAll("line")
         .data(links)
         .join("polyline") //Procura o equivalente a isso (line)
-        .attr("stroke", d => {return d.strokeColor})
+        .attr("stroke", d => {return "#000"})
         .attr("stroke-width", 5)
         .attr("stroke-opacity", 1)
         .on('click',d => linkFunction(d));
@@ -220,7 +217,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
         .selectAll("circle")
         .data(nodes)
         .join("circle")
-        .attr("r", 7)
+        .attr("r", d => {return d.size})
         .attr("fill", color)
         .call(drag(simulation))
         .on('click',d => nodeFunction(d));
