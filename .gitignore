@@ -1,6 +1,2 @@
-.idea/
+.idea\workspace.xml
 node_modules/
-Out_XML/
-Out_JSON/
-In/
-config.json

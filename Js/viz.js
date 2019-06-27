@@ -26,10 +26,9 @@ function keywordPreparation() {
                     + arcticles[mainArticles[art]].keywords.length
                     - common.length
                 );
-            if(common.length > 0) {
-                links.push({"source": mainArticles[a], "target": mainArticles[art], "type": JSON.stringify(common),
-                    "distanceValue": Math.round(currentNetworkGraphLinkDistance*(1-ind))})
-            }
+            if(common.length === 0) { continue; }
+            links.push({"source": mainArticles[a], "target": mainArticles[art], "type": JSON.stringify(common),
+                "distanceValue": Math.round(currentNetworkGraphLinkDistance*(1-ind))})
         }
     };
     nodes.push({"name": arcticles[mainArticles[mainArticles.length-1]].title, "id": mainArticles[mainArticles.length-1]});
@@ -47,7 +46,7 @@ function keywordPreparation() {
 * */
 function referencesPreparation() {
 
-    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
+    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
     let nodes = []
     let links = []
     const arcticles = research.arcticles;
@@ -77,25 +76,43 @@ function referencesPreparation() {
 * */
 function authorPreparation() {
 
-    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
+    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
     let nodes = []
     let links = []
+    let authorLinking = {}
+    let authorArcticles = {}
     const arcticles = research.arcticles;
-    for(let a=0; a < arcticles.length -1; a++) {
-        nodes.push({"name": arcticles[a].title, "id": a});
-        for(let art = a+1; art < arcticles.length; art++) {
-            const common = arcticles[a].author.split(' and ').filter(function(obj) { return arcticles[art].author.split(' and ').indexOf(obj) !== -1; });
-            const ind = common.length/(arcticles[a].author.split(' and ').length + arcticles[art].author.split(' and ').length-common.length);
-            const r = Math.round(255*(1-ind)).toString(16).toLocaleUpperCase()
-            const g = "00"
-            const b = Math.round(255*ind).toString(16).toLocaleUpperCase()
-            if(common.length > 0) {
-                links.push({"source": a, "target": art, "type": JSON.stringify(common),
-                    "strokeColor": "#" + r + g + b})
-            }
+    const mainArticles = research.mainArcticles;
+    for (let ma of mainArticles) {
+        const authors = arcticles[ma].author.split(' and ')
+        authors.forEach(author => {
+            authorArcticles[author] = authorArcticles[author] === undefined ?
+                [ma] : authorArcticles[author].concat(ma);
+            authors.forEach(author2 => {
+                try {
+                    authorLinking[author2][author]++
+                } catch(e) {
+                    try {
+                        authorLinking[author][author2]++
+                    } catch(e) {
+                        authorLinking[author] = {}
+                        authorLinking[author][author2] = 1
+                    }
+                }
+            })
+        })
+    }
+
+    for (let a of Object.keys(authorArcticles)) {
+        nodes.push({"name": a, "id": a, "arcticles": authorArcticles[a], "size": 7+(authorArcticles[a].length/arcticles.length*7)});
+    }
+    for(let al of Object.keys(authorLinking)) {
+        for(let alInside of Object.keys(authorLinking[al])) {
+            links.push({"source": al, "target": alInside,
+                "distanceValue": Math.round(currentNetworkGraphLinkDistance*(1-(authorLinking[al][alInside]/arcticles.length)))})
         }
-    };
-    nodes.push({"name": arcticles[arcticles.length-1].title, "id": arcticles.length-1});
+
+    }
     return [nodes,links];
 }
 
@@ -105,7 +122,7 @@ function authorPreparation() {
 * */
 function publicationYearPreparation() {
 
-    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
+    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
     let nodes = []
     let links = []
     const arcticles = research.arcticles;
@@ -130,7 +147,7 @@ function publicationYearPreparation() {
 * */
 function taxonomyPreparation() {
 
-    if(Object.keys(research) === 0) {console.log('You did not start a research yet.'); return;}
+    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
     let nodes = []
     let links = []
     const arcticles = research.arcticles;
@@ -182,7 +199,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
             .id(d => d.id)
-            .distance(function(d) {return d.distanceValue ? d.distanceValue : currentNetworkGraphLinkDistance;})
+            .distance(function(d) {return d.distanceValue ? d.distanceValue : 0;})
             .strength(0.1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
@@ -191,7 +208,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
         .selectAll("line")
         .data(links)
         .join("polyline") //Procura o equivalente a isso (line)
-        .attr("stroke", d => {return "#000"})
+        .attr("stroke", d => {return "#FF0000"})
         .attr("stroke-width", 5)
         .attr("stroke-opacity", 1)
         .on('click',d => linkFunction(d));
@@ -217,11 +234,12 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
         .selectAll("circle")
         .data(nodes)
         .join("circle")
-        .attr("r", d => {return d.size})
+        .attr("r", d => {return d.size ? d.size : 7})
         .attr("fill", color)
         .call(drag(simulation))
-        .on('click',d => nodeFunction(d));
+        .on('click',d => nodeFunction(d))
 
+    node.attr("transform", function (d) { return "translate(" + d.x > width ? d.x-width : d.x < 1 ? 1 : 0  + "," + d.y > height ? d.y - height : d.y < 1 ? d.y*-1 > height ? d.y*-1 - height : d.y*-1 : 0 + ")"});;
 
     node.append("title")
         .text(d => d.name);
@@ -237,7 +255,6 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
             .attr("cy", d => d.y);
     });
 }
-
 
 function removeSVGContent() {
     d3.select("#keywordSVG").selectAll("*").remove()

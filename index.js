@@ -202,20 +202,20 @@ function setAuthor() {
     currentVizFunction = 'setAuthor';
 
     const nodeFunc = (d) => {
-        const arcticle = research.arcticles[d.id]
+        const arcticles = research.arcticles
         const rightBar = document.getElementById('rightBar')
-        let htmlAuthor = "";
-        for (let aut of arcticle.author.split(' and ')) {htmlAuthor += `<li>${aut}</li>`}
+        let htmlArcticles = "";
+        for (let aut of d.arcticles) { htmlArcticles += `<li onclick="prepViewArcticle(${aut})" >${arcticles[aut].title}</li><hr>` }
         rightBar.innerHTML =
             `<div>
-                <h1 class="session-title">Title:</h1>  
-                <h3 onclick="prepViewArcticle(${+d.id})"><a href="#">${arcticle.title}</a></h3>
+                <h1 class="session-title">Author(s):</h1>  
+                <h3><a href="#">${d.name}</a></h3>
                 
                 <br>
             
-                <h1 class="session-title">Author(s):</h1>
+                <h1 class="session-title">Arcticles:</h1>
                 <ul>
-                    ${htmlAuthor}
+                    ${htmlArcticles}
                 </ul> 
             </div>
             `
@@ -231,7 +231,7 @@ function setAuthor() {
                 
                 <br>
             
-                <h1 class="session-title">Common Author(s):</h1>
+                <h1 class="session-title">Common Arcticles(s):</h1>
                 <ul>
                     ${htmlKW}
                 </ul> 
