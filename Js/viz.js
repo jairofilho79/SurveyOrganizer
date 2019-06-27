@@ -170,7 +170,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
     const drag = simulation => {
 
         function dragstarted(d) {
-            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            if (!d3.event.active) simulation.alphaTarget(0.005).restart();
             d.fx = d.x;
             d.fy = d.y;
         }
@@ -239,7 +239,7 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
         .call(drag(simulation))
         .on('click',d => nodeFunction(d))
 
-    node.attr("transform", function (d) { return "translate(" + d.x > width ? d.x-width : d.x < 1 ? 1 : 0  + "," + d.y > height ? d.y - height : d.y < 1 ? d.y*-1 > height ? d.y*-1 - height : d.y*-1 : 0 + ")"});;
+    //node.attr("transform", function (d) { return "translate(" + d.x > width ? d.x-width : d.x < 1 ? 1 : 0  + "," + d.y > height ? d.y - height : d.y < 1 ? d.y*-1 > height ? d.y*-1 - height : d.y*-1 : 0 + ")"});;
 
     node.append("title")
         .text(d => d.name);
@@ -251,8 +251,15 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
                 d.target.x + "," + d.target.y; });
 
         node
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
+            .attr("cx", d => {
+                d.vx = 0
+                return d.x
+            })
+            .attr("cy", d => {
+                d.vy = 0
+                return d.y
+            });
+
     });
 }
 
