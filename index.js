@@ -244,47 +244,9 @@ function setAuthor() {
 
 function setPublicationYear() {
     refreshApp();
-    currentVizFunction = 'setPublicationYear';
 
-    const nodeFunc = (d) => {
-        const arcticle = research.arcticles[d.id]
-        const rightBar = document.getElementById('rightBar')
-        let htmlKW = "";
-        for (let kw of arcticle.publicationYear) {htmlKW += `<li>${kw}</li>`}
-        rightBar.innerHTML =
-            `<div>
-                <h1 class="session-title">Title:</h1>  
-                <h3>${arcticle.title}</h3>
-                
-                <br>
-                
-                <h1 class="session-title">DOI:</h1>  
-                <h3>${arcticle.doi}</h3>
-                
-                <br>
-            
-                <h1 class="session-title">Publication Year:</h1>
-                <h3>${arcticle.publicationYear}</h3>
-            </div>
-            `
-    }
-    const linkFunc = (d) => {
-        const rightBar = document.getElementById('rightBar')
-        rightBar.innerHTML =
-            `<div>
-                <h1 class="session-title">Linked Nodes:</h1>  
-                <h3>${d.source.name} <br> <hr>${d.target.name}</h3>
-                
-                <br>
-            
-                <h1 class="session-title">Common Year:</h1>
-                <ul>
-                    ${research.arcticles[d.id].publicationYear}
-                </ul> 
-            </div>
-            `
-    }
-    networkGraphDrawing("#publicationYearSVG",...publicationYearPreparation(),nodeFunc,linkFunc);
+
+    histogramDrawning(publicationYearPreparation())
 }
 
 function setTaxonomy() {

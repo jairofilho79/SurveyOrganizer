@@ -122,22 +122,7 @@ function authorPreparation() {
 * */
 function publicationYearPreparation() {
 
-    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
-    let nodes = []
-    let links = []
-    const arcticles = research.arcticles;
-    for(let a=0; a < arcticles.length -1; a++) {
-        nodes.push({"name": arcticles[a].title, "id": a});
-        for(let art = a+1; art < arcticles.length; art++) {
-            const common = arcticles[a].publicationYear === arcticles[art].publicationYear ?
-                [arcticles[a].title] : [];
-            if(common.length > 0) {
-                links.push({"source": a, "target": art, "type": JSON.stringify(common)})
-            }
-        }
-    };
-    nodes.push({"name": arcticles[arcticles.length-1].title, "id": arcticles.length-1});
-    return [nodes,links];
+    return [100, 1, 21, 14, 37, 15, 18, 34, 30]
 }
 
 /*
@@ -261,6 +246,23 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
             });
 
     });
+}
+
+function histogramDrawning() {
+
+    const svg = d3.select("#publicationYearSVG")
+        // .attr("height","100%")
+        // .attr("width","100%");
+
+    svg.selectAll("rect")
+        .data(dataArray)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("height", function(d, i) {return (d * 10)})
+        .attr("width","40")
+        .attr("x", function(d, i) {return (i * 60) + 25})
+        .attr("y", function(d, i) {return 400 - (d * 10)})
+        .on('click', (d) => {console.log(d)})
 }
 
 function removeSVGContent() {
