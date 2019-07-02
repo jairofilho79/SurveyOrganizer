@@ -118,11 +118,38 @@ function authorPreparation() {
 
 /*
 *
-*Os nós serão os artigos. Os links serão as datas em comum.
+*allYears: array com todos os anos
+*years: array com os anos, sem repetição
+*count: array com a quantidade de repetições de cada ano.
 * */
 function publicationYearPreparation() {
+    if(!research.hasResearch) {console.log('You did not start a research yet.'); return;}
 
-    return [100, 1, 21, 14, 37, 15, 18, 34, 30]
+    let allYears = [], years = [], count = []
+    let prev
+
+    const arcticles = research.arcticles;
+    const mainArticles = research.mainArcticles
+
+    for(let i of mainArticles){
+        allYears.push(arcticles[i].publicationYear) 
+    }
+
+    allYears.sort()
+    //console.log(allYears)
+
+    for(let i = 0; i < allYears.length; i++){
+        
+        if ( allYears[i] !== prev ) {
+            years.push(allYears[i]);
+            count.push(1);
+        } else {
+            count[count.length-1]++;
+        }
+        prev = allYears[i];
+    }
+    //console.log(count)
+    return [years,count];
 }
 
 /*
