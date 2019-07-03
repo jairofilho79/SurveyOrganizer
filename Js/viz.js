@@ -275,14 +275,14 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
     });
 }
 
-function histogramDrawning() {
+function histogramDrawning(dataArray) {
 
     const svg = d3.select("#publicationYearSVG")
         // .attr("height","100%")
         // .attr("width","100%");
 
     svg.selectAll("rect")
-        .data(dataArray)
+        .data(dataArray[1])
         .enter().append("rect")
         .attr("class", "bar")
         .attr("height", function(d, i) {return (d * 10)})
