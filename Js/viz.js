@@ -276,20 +276,34 @@ function networkGraphDrawing(id,nodes,links, nodeFunction, linkFunction, arrow=f
 }
 
 function histogramDrawning(dataArray) {
+    const prop = 60;
 
     const svg = d3.select("#publicationYearSVG")
-        // .attr("height","100%")
-        // .attr("width","100%");
+        //.attr("height", "500")
+        //.attr("width", "600");   
 
+    const x = d3.scaleBand()
+        .domain(dataArray[0])
+        .range([0, (prop * dataArray[0].length)]);
+
+    svg.append("g")
+        .attr("transform", "translate("+((svg.attr("width") / dataArray[1].length)+(prop - 10))+",405)")
+        .call(d3.axisBottom(x));
+        
     svg.selectAll("rect")
-        .data(dataArray[1])
+        .data(dataArray[1]) //Count of Year
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("height", function(d, i) {return (d * 10)})
-        .attr("width","40")
-        .attr("x", function(d, i) {return (i * 60) + 25})
-        .attr("y", function(d, i) {return 400 - (d * 10)})
-        .on('click', (d) => {console.log(d)})
+        .attr("fill", "#1f77b4")
+        .attr("height", function(d, i) {return (d * 50)})
+        .attr("width", "40")
+        .attr("x", function(d, i) {
+            return (i * prop)}) // é a distancia entre o inicio das barras
+        .attr("y", function(d) {
+            return (svg.attr("height") - (d * 50));})//Altura da origem desenho
+        .attr("transform", "translate("+((svg.attr("width") / dataArray[1].length)+prop)+",-100)")
+        .data(dataArray[0]) //Publication Year
+        .on('click', (d) => {console.log(d)})    
 }
 
 function removeSVGContent() {
